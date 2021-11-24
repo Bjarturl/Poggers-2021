@@ -1,5 +1,5 @@
 from helpers import *
-import random, os, shutil
+import random, os, shutil, csv
 
 
 class DataParser:
@@ -30,7 +30,7 @@ class DataParser:
             AND timestamp <= '{self.max_date}'
             AND chat_identifier_id = '{self.chat_id}'
         """)
-        with open(f"{self.save_path}/Heildarfjöldi skilaboða.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/heildarfjöldi_skilaboða.csv", "w+", encoding="utf-8") as f:
             f.write("Heildarfjöldi skilaboða\n")
             f.write(str(self.cursor.fetchone()[0]))
         f.close()
@@ -45,7 +45,7 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             AND is_photo = 1
         """)
-        with open(f"{self.save_path}/Heildarfjöldi mynda.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/heildarfjöldi_mynda.csv", "w+", encoding="utf-8") as f:
             f.write("Heildarfjöldi mynda\n")
             f.write(str(self.cursor.fetchone()[0]))
         f.close()
@@ -64,12 +64,12 @@ class DataParser:
             GROUP BY S.name
             ORDER BY S.name, no_occurences DESC
         """)
-        with open(f"{self.save_path}/Reactions per einstaklingur.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/reactions_per_einstaklingur.csv", "w+", encoding="utf-8") as f:
             f.write("name,no_occurences,emoji\n")
             name = ""
             count = 0
             vals = []
-            hearts = open("hearts.txt", "r", encoding="utf-8").read().split()
+            hearts = open("static/hearts.txt", "r", encoding="utf-8").read().split()
             heart = '❤'
             occ = 0
             tmp = ""
@@ -120,7 +120,7 @@ class DataParser:
             GROUP BY sender
             ORDER BY COUNT(*) DESC
         """)
-        with open(f"{self.save_path}/Fékk flest reactions.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fékk_flest_reactions.csv", "w+", encoding="utf-8") as f:
             f.write("Count of reaction,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -136,7 +136,7 @@ class DataParser:
             GROUP BY day(timestamp)
             ORDER BY day(timestamp) 
         """)
-        with open(f"{self.save_path}/Fjöldi skilaboða eftir degi.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fjöldi_skilaboða_eftir_degi.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Day\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -152,7 +152,7 @@ class DataParser:
             GROUP BY MONTH(timestamp)
             ORDER BY Month(timestamp)
         """)
-        with open(f"{self.save_path}/Fjöldi skilaboða eftir mánuðum.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fjöldi_skilaboða_eftir_mánuðum.csv", "w+", encoding="utf-8") as f:
             f.write("Month,Skilaboð\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -168,7 +168,7 @@ class DataParser:
             GROUP BY hour
             ORDER BY hour
         """)
-        with open(f"{self.save_path}/Fjöldi skilaboða eftir tíma dags.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fjöldi_skilaboða_eftir_tíma_dags.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Klukkutími\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -184,7 +184,7 @@ class DataParser:
             GROUP BY s.NAME
             ORDER BY COUNT(*) DESC
         """)
-        with open(f"{self.save_path}/Flest skilaboð send.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/flest_skilaboð_send.csv", "w+", encoding="utf-8") as f:
             f.write("Count of message,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -201,7 +201,7 @@ class DataParser:
             GROUP BY S.NAME
             ORDER BY COUNT(*) DESC
         """)
-        with open(f"{self.save_path}/Flestar myndir sendar.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/flestar_myndir_sendar.csv", "w+", encoding="utf-8") as f:
             f.write("Count of message,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -216,7 +216,7 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             ORDER BY msg_len DESC
         """)
-        with open(f"{self.save_path}/Lengstu skilaboðin (í orðum).csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/lengstu_skilaboðin_(í_orðum).csv", "w+", encoding="utf-8") as f:
             f.write("Max of msg_len,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -232,7 +232,7 @@ class DataParser:
             GROUP BY S.name
             ORDER BY  truncate(avg(cast(msg_len as float)), 2) DESC
         """)
-        with open(f"{self.save_path}/Meðallengd skilaboða (í orðum).csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/meðallengd_skilaboða_(í_orðum).csv", "w+", encoding="utf-8") as f:
             f.write("sender,Average of msg_len\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},\"{str(line[1]).replace('.', ',')}\"\n")
@@ -248,10 +248,11 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             ORDER BY timestamp 
         """)
-        with open(f"{self.save_path}/Nafnið.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/nafnið.csv", "w+", encoding="utf-8") as f:
             f.write("date,message\n")
             for line in self.cursor.fetchall():
-                f.write(f"{line[0]},{str(line[1])}\n")
+                n = line[1].replace('\"', '\'')
+                f.write(f"{line[0]},\"{n}\"\n")
         f.close()
 
     def reactaði_oftast(self):
@@ -266,104 +267,42 @@ class DataParser:
             GROUP BY S.name
             ORDER BY COUNT(*) DESC
         """)
-        with open(f"{self.save_path}/Reactaði oftast.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/reactaði_oftast.csv", "w+", encoding="utf-8") as f:
             f.write("Count of reaction,actor\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
 
-    # def vinsælustu_reactions(self):
-    #     self.cursor.execute(f"""
-    #         SELECT top 12 reaction collate Latin1_General_100_CI_AS_SC as emoji, COUNT(reaction) as no_occurences
-    #         FROM Reaction R JOIN Message M ON R.message = M.id
-    #         where R.timestamp >= '{self.min_date}' 
-    #         AND R.timestamp <= '{self.max_date}'
-    #         AND chat_identifier_id = '{self.chat_id}'
-    #         GROUP BY reaction collate Latin1_General_100_CI_AS_SC
-    #         ORDER BY no_occurences DESC
-    #     """)
-    #     with open(f"{self.save_path}/Vinsælustu reactions.csv", "w+", encoding="utf-8") as f:
-    #         f.write("emoji,no_occurences\n")
-    #         hearts = ['❤', '💗', '💖', '♥️', '💝']
-    #         heart = '❤'
-    #         occ = 0
-    #         for line in self.cursor.fetchall():
-    #             if line[0] in hearts:
-    #                 occ += line[1]
-    #             else:
-    #                 f.write(f"{line[0]},{line[1]}\n")
-    #         f.write(f"{heart},{occ}\n")
-    #     f.close()
 
-    def wordcloud(self):
-        stop_words = get_stop_words()
-        senders = get_senders(self.min_date, self.max_date, self.chat_id)
-        f = open(f"{self.save_path}/wordcloud.csv", "w+", encoding="utf-8")
-        f.write("sender,word,value\n")
-        for s in senders:
-            print(s)
-            q = f""" 
-                WITH 
-                    Num1 (n) AS (SELECT 1 UNION ALL SELECT 1),
-                    Num2 (n) AS (SELECT 1 FROM Num1 AS X, Num1 AS Y),
-                    Num3 (n) AS (SELECT 1 FROM Num2 AS X, Num2 AS Y),
-                    Num4 (n) AS (SELECT 1 FROM Num3 AS X, Num3 AS Y),
-                    Nums (n) AS (SELECT ROW_NUMBER() OVER(ORDER BY n) FROM Num4),
-                    Words (word) AS (
-                        SELECT SUBSTRING(' ' + DESCr + ' ', n + 1,
-                            CHARINDEX(' ', ' ' + DESCr + ' ', n + 1) - n - 1)
-                        FROM Nums
-                        JOIN (SELECT  CAST(message AS NVARCHAR(MAX)) FROM PersonalProjects.dbo.Message WHERE timestamp >= '{self.min_date}' 
-                        AND timestamp <= '{self.max_date}' AND chat_identifier_id = '{self.chat_id}' {"AND sender = '" + s + "'" if s != 'Allir' else ''}) AS F(DESCr)
-                        ON SUBSTRING(' ' + DESCr + ' ', n, 1 ) = ' '
-                        AND n < LEN(' ' + DESCr + ' '))
-                SELECT top 100 word, COUNT(*) AS value
-                FROM Words
-                where word not in ({stop_words})
-                GROUP BY word
-                ORDER BY value DESC
-            """
-            self.cursor.execute(q)
-            for word, value in self.cursor.fetchall():
-                word = word.replace('\"', '')
-                f.write(f"{s},{word},{value}\n")
-        f.close()
-
-    def create_all(self, skip_wordcloud):
-        print("Executing heildarfjöldi_skilaboða()...")
-        self.heildarfjöldi_skilaboða()
-        print("Executing heildarfjöldi_mynda()...")
-        self.heildarfjöldi_mynda()
-        print("Executing fjöldi_skilaboða_eftir_degi()...")
-        self.fjöldi_skilaboða_eftir_degi()
-        print("Executing fjöldi_skilaboða_eftir_mánuðum()...")
-        self.fjöldi_skilaboða_eftir_mánuðum()
-        print("Executing fjöldi_skilaboða_eftir_tíma_dags()...")
-        self.fjöldi_skilaboða_eftir_tíma_dags()
-        print("Executing reactions_per_einstaklingur()...")
-        self.reactions_per_einstaklingur()
-        print("Executing fékk_flest_reactions()...")
-        self.fékk_flest_reactions()
-        print("Executing flest_skilaboð_send()...")
-        self.flest_skilaboð_send()
-        print("Executing flestar_myndir_sendar()...")
-        self.flestar_myndir_sendar()
-        print("Executing lengstu_skilaboðin()...")
-        self.lengstu_skilaboðin()
-        print("Executing meðallengd_skilaboða()...")
-        self.meðallengd_skilaboða()
+    def create_all(self):
+        # print("Executing heildarfjöldi_skilaboða()...")
+        # self.heildarfjöldi_skilaboða()
+        # print("Executing heildarfjöldi_mynda()...")
+        # self.heildarfjöldi_mynda()
+        # print("Executing fjöldi_skilaboða_eftir_degi()...")
+        # self.fjöldi_skilaboða_eftir_degi()
+        # print("Executing fjöldi_skilaboða_eftir_mánuðum()...")
+        # self.fjöldi_skilaboða_eftir_mánuðum()
+        # print("Executing fjöldi_skilaboða_eftir_tíma_dags()...")
+        # self.fjöldi_skilaboða_eftir_tíma_dags()
+        # print("Executing reactions_per_einstaklingur()...")
+        # self.reactions_per_einstaklingur()
+        # print("Executing fékk_flest_reactions()...")
+        # self.fékk_flest_reactions()
+        # print("Executing flest_skilaboð_send()...")
+        # self.flest_skilaboð_send()
+        # print("Executing flestar_myndir_sendar()...")
+        # self.flestar_myndir_sendar()
+        # print("Executing lengstu_skilaboðin()...")
+        # self.lengstu_skilaboðin()
+        # print("Executing meðallengd_skilaboða()...")
+        # self.meðallengd_skilaboða()
         print("Executing nafnið()...")
         self.nafnið()
-        # print("Executing reactaði_oftast()...")
-        # self.reactaði_oftast()
-        # print("Executing vinsælustu_reactions()...")
-        # self.vinsælustu_reactions()
-        # if not skip_wordcloud:
-        #     print("Executing wordcloud()...")
-        #     self.wordcloud()
+        print("Executing reactaði_oftast()...")
+        self.reactaði_oftast()
 
-
-    def data_by_years(self, skip_wordcloud=False):
+    def data_by_years(self):
         min_year = get_min_year(self.chat_id)
         curr_year = get_curr_year()
         save_path_root = self.save_path
@@ -371,9 +310,9 @@ class DataParser:
         self.set_dates(min_year, curr_year)
         self.set_save_path(f'{save_path_root}/all')
         print(f"Years: {min_year} - {curr_year}")
-        self.create_all(skip_wordcloud)
-        # for i in range(min_year, curr_year+1):
-        #     print(f"Year: {i}")
-        #     self.set_dates(i, i)
-        #     self.set_save_path(f'{save_path_root}/{i}')
-        #     self.create_all(skip_wordcloud)
+        self.create_all()
+        for i in range(min_year, curr_year+1):
+            print(f"Year: {i}")
+            self.set_dates(i, i)
+            self.set_save_path(f'{save_path_root}/{i}')
+            self.create_all()

@@ -1,9 +1,9 @@
 from data_parser import DataParser
 # python manage.py shell < apps/messenger/utils/populate_database.py 
-
+import os
 chat_id = 'boycott'
 dp = DataParser(
-    save_path=f"C:/Users/Notandi/Desktop/poggers21/backend/data/parsed/{chat_id}", 
+    save_path=f"{os.getcwd()}\\data\\", 
     chat_id=chat_id
 )
-dp.data_by_years(True)
+dp.data_by_years()
