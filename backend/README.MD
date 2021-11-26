@@ -5,9 +5,12 @@ The command for generating the files assumes a connection to a local database fo
 All data is fetched from Facebook and inserted into a MySQL database through a different Django app not present in this project (easier to do through Django ORM).
 
 ## Basic setup
+
 - pip install virtualenv
 - source venv/Scripts/activate
 - pip install -r requirements.txt
+
+Run source venv/Scripts/activate in the project root every time you open up a new terminal
 
 ## Generate csv files
 The csv files should already be generated, otherwise run this command.
@@ -15,3 +18,13 @@ The csv files should already be generated, otherwise run this command.
 
 ## Serve
 - ./serve.sh
+
+## Example usage
+The main endpoint for this API is /data/{year}/{file}.
+The /data endpoint will give you all possible combinations that can be passed to the {year} and {file} variables.
+E.g. calling the main endpoint with:
+year = 2017 
+file = heildarfjöldi_mynda
+or /data/2017/heildarfjöldi_mynda
+would give you the data for heildarfjöldi_mynda in the year 2017.
+If you want to query for all years, simply put "all" in the year parameter.
