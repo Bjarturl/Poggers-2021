@@ -1,4 +1,4 @@
-# POGGERS 2021
+# POGGERS 2021 backend
 The backend serves content from csv files as I'm not interested in exposing a local database which contains my entire chat history.
 Instead I generate these csv files so the frontend only knows about minimal necessary data to create graphs and such.
 The command for generating the files assumes a connection to a local database following a certain schema. 
