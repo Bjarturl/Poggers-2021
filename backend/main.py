@@ -26,8 +26,8 @@ def root():
 @app.get("/data")
 def data():    
     return {
-        "years": os.listdir(f"{os.getcwd()}\data"),
-        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}\data\\all")]
+        "years": os.listdir(f"{os.getcwd()}/data"),
+        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/all")]
     }
 
 
