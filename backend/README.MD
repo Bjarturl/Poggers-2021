@@ -4,20 +4,24 @@ Instead I generate these csv files so the frontend only knows about minimal nece
 The command for generating the files assumes a connection to a local database following a certain schema. 
 All data is fetched from Facebook and inserted into a MySQL database through a different Django app not present in this project (easier to do through Django ORM).
 
-## Basic setup
-
-- pip install virtualenv
-- source venv/Scripts/activate
-- pip install -r requirements.txt
-
+## Project setup
+```
+pip install virtualenv
+source venv/Scripts/activate
+pip install -r requirements.txt
+```
 Run source venv/Scripts/activate in the project root every time you open up a new terminal
 
 ## Generate csv files
 The csv files should already be generated, otherwise run this command.
-- ./generate_csv.sh
+```
+./generate_csv.sh
+```
 
 ## Serve
-- ./serve.sh
+```
+./serve.sh
+```
 
 ## Example usage
 The main endpoint for this API is /data/{year}/{file}.
@@ -31,3 +35,4 @@ If you want to query for all years, simply put "all" in the year parameter.
 
 ## Pushing to Heroku
 - git subtree push --prefix backend heroku main
+Then the api will be available at https://poggers2021api.herokuapp.com/

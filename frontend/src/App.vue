@@ -1,21 +1,22 @@
 <template>
   <div id="app">
-    <HelloWorld />
+    <line-chart 
+      :labels="['TEST', 'TEST2']"
+      :lines="[{label: 'ye', data: [10,20]}]"
+    />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import LineChart from './components/LineChart.vue'
 import { GET } from './data/api'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    LineChart
   },
   mounted() {
-    this.getAllData()
-    this.getMessagesByTime()
   },
 
   methods: {
