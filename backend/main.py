@@ -1,7 +1,21 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import os, csv
+
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# ENDPOINTS
 
 @app.get("/")
 def root():    
@@ -13,7 +27,7 @@ def root():
 def data():    
     return {
         "years": os.listdir(f"{os.getcwd()}\data"),
-        "files": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}\data\\all")]
+        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}\data\\all")]
     }
 
 
