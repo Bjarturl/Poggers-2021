@@ -28,3 +28,6 @@ file = heildarfjöldi_mynda
 or /data/2017/heildarfjöldi_mynda
 would give you the data for heildarfjöldi_mynda in the year 2017.
 If you want to query for all years, simply put "all" in the year parameter.
+
+## Pushing to Heroku
+- git subtree push --prefix backend heroku main
