@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import os, csv
+import os
+import csv
 
 app = FastAPI()
 
@@ -18,13 +19,13 @@ app.add_middleware(
 # ENDPOINTS
 
 @app.get("/")
-def root():    
+def root():
     return {"message": "POGGERS"}
 
 
 # Returns all available files and years for data_by_year_and_file
 @app.get("/data")
-def data():    
+def data():
     return {
         "years": os.listdir(f"{os.getcwd()}/data"),
         "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/all")]
@@ -33,13 +34,14 @@ def data():
 
 # Returns parsed data for specified year and file
 @app.get("/data/{year}/{file}")
-async def data_by_year_and_file(year, file):    
+async def data_by_year_and_file(year, file):
+    apiData = {}
     data = []
     try:
         f = open(f"data/{year}/{file}.csv", "r", encoding="utf-8")
     except FileNotFoundError:
         return {"data": [], "message": "File not found"}
-    csv_reader = csv.reader(f, delimiter=",")    
+    csv_reader = csv.reader(f, delimiter=",")
     line_count = 0
     labels = []
     for line in csv_reader:
@@ -55,4 +57,5 @@ async def data_by_year_and_file(year, file):
                     data_obj[labels[i]] = str(line[i])
             data.append(data_obj)
         line_count += 1
-    return {"data": data}
+    apiData[file] = data
+    return apiData

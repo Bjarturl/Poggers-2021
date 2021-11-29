@@ -1,5 +1,8 @@
 from helpers import *
-import random, os, shutil, csv
+import random
+import os
+import shutil
+import csv
 
 
 class DataParser:
@@ -69,7 +72,8 @@ class DataParser:
             name = ""
             count = 0
             vals = []
-            hearts = open("static/hearts.txt", "r", encoding="utf-8").read().split()
+            hearts = open("static/hearts.txt", "r",
+                          encoding="utf-8").read().split()
             heart = '❤'
             occ = 0
             tmp = ""
@@ -128,7 +132,7 @@ class DataParser:
 
     def fjöldi_skilaboða_eftir_degi(self):
         self.cursor.execute(f"""
-            SELECT COUNT(*) as Skilaboð, DAYNAME(timestamp) as Day
+            SELECT COUNT(*) as Skilaboð, DAY(timestamp) as Day
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
@@ -144,7 +148,7 @@ class DataParser:
 
     def fjöldi_skilaboða_eftir_mánuðum(self):
         self.cursor.execute(f"""
-            SELECT MONTHNAME(timestamp) as Month, COUNT(*) as Skilaboð
+            SELECT COUNT(*) as Skilaboð, MONTHNAME(timestamp) as Month
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
@@ -153,7 +157,7 @@ class DataParser:
             ORDER BY Month(timestamp)
         """)
         with open(f"{self.save_path}/fjöldi_skilaboða_eftir_mánuðum.csv", "w+", encoding="utf-8") as f:
-            f.write("Month,Skilaboð\n")
+            f.write("Skilaboð,Month\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
@@ -272,7 +276,6 @@ class DataParser:
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
-
 
     def create_all(self):
         print("Executing heildarfjöldi_skilaboða()...")
