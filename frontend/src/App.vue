@@ -1,32 +1,33 @@
 <template>
   <div id="app">
+    <most-popular-data />
     <data-over-time />
   </div>
 </template>
 
 <script>
-import { GET } from './data/api'
-import DataOverTime from './templates/DataOverTime.vue'
+import { GET } from "./data/api";
+import DataOverTime from "./templates/DataOverTime.vue";
+import MostPopularData from "./templates/MostPopularData.vue";
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    DataOverTime
+    MostPopularData,
+    DataOverTime,
   },
 
-data() {
-    return {
-
-    }
+  data() {
+    return {};
   },
 
   methods: {
     async getAllData() {
-      const data = await GET.allData()
-      this.$store.years = data.years
-      this.$store.names = data.names
+      const data = await GET.allData();
+      this.$store.years = data.years;
+      this.$store.names = data.names;
     },
-  }
-} 
+  },
+};
 </script>
 
 <style lang="scss">

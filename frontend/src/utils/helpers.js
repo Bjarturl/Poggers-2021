@@ -7,3 +7,13 @@ export const capitalizeFirstLetter = (str) => {
     str[0].toUpperCase() + str.split("_").join(" ").substring(1, str.length)
   );
 };
+
+export const getChartData = (baseObj, key, x, y) => {
+  return {
+    labels: formatArrByKey(baseObj, x),
+    lines: {
+      data: formatArrByKey(baseObj, y),
+      label: capitalizeFirstLetter(key),
+    },
+  };
+};

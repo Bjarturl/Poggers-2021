@@ -1,39 +1,39 @@
 <template>
   <div>
-    <line-chart :labels="labels" :lines="lines" />
+    <horizontal-bar-chart :labels="labels" :lines="lines" />
   </div>
 </template>
 
 <script>
-import LineChart from "../components/LineChart.vue";
+import HorizontalBarChart from "../components/HorizontalBarChart.vue";
 import { GET } from "../data/api";
 import { getChartData } from "../utils/helpers";
 export default {
-  name: "DataOverTime",
+  name: "MostPopularData",
   components: {
-    LineChart,
+    HorizontalBarChart,
   },
 
   async mounted() {
-    await this.getMessagesByTime();
+    await this.getMostPopularData();
     this.setPlots();
   },
   data() {
     return {
       labels: [],
       lines: [],
-      currKey: "fjöldi_skilaboða_eftir_degi",
+      currKey: "flest_skilaboð_send",
       keys: {},
     };
   },
 
   methods: {
-    async getMessagesByTime() {
-      await GET.messagesByTimeData(this.$store.year).then(
+    async getMostPopularData() {
+      await GET.mostPopularData(this.$store.year).then(
         function (data) {
-          this.$store.dataOverTime = data;
+          this.$store.mostPopularData = data;
           // Store label and data key values
-          this.$store.dataOverTime.forEach((obj) => {
+          this.$store.mostPopularData.forEach((obj) => {
             const category = Object.keys(obj)[0];
             this.keys[category] = Object.keys(obj[category][0]);
           });
@@ -43,18 +43,19 @@ export default {
 
     setPlots() {
       const dataObj = getChartData(
-        this.$store.dataOverTime.find((obj) => obj[this.currKey])[this.currKey],
+        this.$store.mostPopularData.find((obj) => obj[this.currKey])[
+          this.currKey
+        ],
         this.currKey,
         this.keys[this.currKey][1],
         this.keys[this.currKey][0]
       );
-      this.labels = dataObj.labels;
-      this.lines = [dataObj.lines];
+      this.labels = dataObj.labels.slice(0, 5);
+      this.lines = [dataObj.lines].slice(0, 5);
     },
   },
 };
 </script>
 
 <style lang="scss">
-@import "~@/assets/scss/vendors/bootstrap-vue/index";
 </style>

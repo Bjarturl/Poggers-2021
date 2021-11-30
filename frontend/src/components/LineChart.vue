@@ -12,7 +12,7 @@
 <script>
 import { mdbLineChart, mdbContainer } from "mdbvue";
 export default {
-  name: "HelloWorld",
+  name: "LineChart",
   components: {
     mdbLineChart,
     mdbContainer,
