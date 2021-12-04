@@ -1,49 +1,26 @@
 <template>
   <div class="app-container">
     <Loading v-if="fetching" />
-    <b-container class="page-container" v-else>
-      <component :is="pages[currPage]" />
-      <div class="pagination">
-        <div class="pagination__container">
-          <b-iconstack
-            rotate="180"
-            font-scale="1.75"
-            class="pagination__arrow"
-            @click="prevPage"
-            :class="currPage > 0 ? '' : 'pagination__arrow--disabled'"
-          >
-            <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
-            <b-icon stacked icon="circle"></b-icon>
-            <b-icon stacked icon="chevron-right"></b-icon>
-          </b-iconstack>
-          <span class="pagination__page">{{ currPage + 1 }}</span>
-          <b-iconstack
-            font-scale="1.75"
-            class="pagination__arrow"
-            @click="nextPage"
-            :class="
-              currPage < pages.length - 1 ? '' : 'pagination__arrow--disabled'
-            "
-          >
-            <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
-            <b-icon stacked icon="circle"></b-icon>
-            <b-icon stacked icon="chevron-right"></b-icon>
-          </b-iconstack>
-        </div>
-      </div>
-    </b-container>
+    <div v-else class="container">
+      <b-container class="page-container">
+        <component :is="pages[currPage]" />
+      </b-container>
+      <Pagination />
+    </div>
   </div>
 </template>
 
 <script>
 import { GET } from "./data/api";
 import Loading from "./components/Loading.vue";
+import Pagination from "./components/Pagination.vue";
 import DataOverTime from "./templates/DataOverTime.vue";
 import MostPopularData from "./templates/MostPopularData.vue";
 export default {
   name: "App",
   components: {
     Loading,
+    Pagination,
   },
 
   data() {
@@ -64,7 +41,9 @@ export default {
       const data = await GET.allData();
       this.$store.years = data.years;
       this.$store.names = data.names;
+      // setTimeout(() => {
       this.fetching = false;
+      // }, 5000);
     },
 
     prevPage() {
@@ -86,50 +65,25 @@ export default {
 @import "~@/assets/scss/vendors/bootstrap-vue/index";
 .app-container {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: $primary;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .page-container {
   background-color: $gray-400;
-  height: 80%;
+  min-height: 80%;
+  padding: 40px;
   border: 3px solid $black;
   position: relative;
-}
-
-.pagination {
-  position: absolute;
-  right: -3px;
-  bottom: -60px;
-  &__page {
-    font-size: 32px;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-
-  &__container {
-    display: flex;
-    align-items: center;
-    border: 3px solid black;
-    background-color: $gray-400;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  &__arrow {
-    cursor: pointer;
-    &--disabled {
-      cursor: auto;
-      opacity: 0.75;
-    }
-
-    &:hover {
-      opacity: 0.75;
-      transition: opacity 0.3s ease;
-    }
-  }
 }
 </style>

@@ -1,17 +1,32 @@
 <template>
-  <div>
-    <horizontal-bar-chart :labels="labels" :lines="lines" />
-  </div>
+  <b-container class="data">
+    <b-row>
+      <b-col col lg="6">
+        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
+      </b-col>
+      <b-col col lg="6">
+        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
+      </b-col>
+    </b-row>
+    <b-row class="justify-content-md-center">
+      <b-col col lg="6">
+        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
+      </b-col>
+      <b-col col lg="6">
+        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
-import HorizontalBarChart from "../components/HorizontalBarChart.vue";
+// import HorizontalBarChart from "../components/HorizontalBarChart.vue";
 import { GET } from "../data/api";
 import { getChartData } from "../utils/helpers";
 export default {
   name: "MostPopularData",
   components: {
-    HorizontalBarChart,
+    // HorizontalBarChart,
   },
 
   async mounted() {
@@ -20,9 +35,6 @@ export default {
   },
   data() {
     return {
-      labels: [],
-      lines: [],
-      currKey: "flest_skilaboð_send",
       keys: {},
     };
   },
@@ -41,21 +53,30 @@ export default {
       );
     },
 
-    setPlots() {
-      const dataObj = getChartData(
-        this.$store.mostPopularData.find((obj) => obj[this.currKey])[
-          this.currKey
-        ],
-        this.currKey,
-        this.keys[this.currKey][1],
-        this.keys[this.currKey][0]
+    getPlots(key) {
+      return getChartData(
+        this.$store.mostPopularData.find((obj) => obj[key])[key],
+        key,
+        this.keys[key][1],
+        this.keys[key][0]
       );
-      this.labels = dataObj.labels.slice(0, 5);
-      this.lines = [dataObj.lines].slice(0, 5);
+    },
+
+    getLabelsForKey(key) {
+      const dataObj = this.getPlots(key);
+      return dataObj.labels.slice(0, 5);
+    },
+
+    getLinesForKey(key) {
+      const dataObj = this.getPlots(key);
+      return dataObj.lines.slice(0, 5);
     },
   },
 };
 </script>
 
 <style lang="scss">
+.data {
+  width: 100%;
+}
 </style>

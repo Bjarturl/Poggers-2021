@@ -3,8 +3,6 @@
     <mdb-horizontal-bar-chart
       :data="horizontalBarChartData"
       :options="horizontalBarChartOptions"
-      :width="width"
-      :height="height"
     ></mdb-horizontal-bar-chart>
   </mdb-container>
 </template>

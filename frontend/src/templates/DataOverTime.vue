@@ -1,7 +1,9 @@
 <template>
-  <div>
-    <line-chart :labels="labels" :lines="lines" />
-  </div>
+  <b-container>
+    <b-row>
+      <line-chart :labels="labels" :lines="lines" />
+    </b-row>
+  </b-container>
 </template>
 
 <script>

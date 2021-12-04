@@ -5,11 +5,11 @@
         <div class="loading__fists loading__character__ingvar--fists">
           <img
             class="loading__fist loading__character__ingvar--fist1"
-            src="../assets/hnefi.jpg"
+            src="../assets/hnefi.png"
           />
           <img
             class="loading__fist loading__character__ingvar--fist2"
-            src="../assets/hnefi.jpg"
+            src="../assets/hnefi.png"
           />
         </div>
         <img
@@ -20,18 +20,18 @@
       <div class="loading__character loading__character__arnie">
         <img
           class="loading__head loading__character__arnie--head"
-          src="../assets/poggers_himself.jpg"
+          src="../assets/poggers_himself.png"
         />
       </div>
       <div class="loading__character loading__character__einar">
         <div class="loading__fists loading__character__einar--fists">
           <img
             class="loading__fist loading__character__einar--fist1"
-            src="../assets/hnefi.jpg"
+            src="../assets/hnefi.png"
           />
           <img
             class="loading__fist loading__character__einar--fist2"
-            src="../assets/hnefi.jpg"
+            src="../assets/hnefi.png"
           />
         </div>
         <img
@@ -103,8 +103,8 @@ export default {
   }
 
   &__head {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
   }
   &__character {
     position: relative;
@@ -113,7 +113,7 @@ export default {
       margin-right: 40px;
       &--fists {
         transform: scaleX(-1);
-        right: -75px;
+        right: -50px;
       }
       &--head {
         animation: MoveUpDown 0.75s linear infinite;
@@ -121,13 +121,15 @@ export default {
     }
     &__arnie {
       &--head {
+        width: 160px;
+        height: 160px;
         animation: FlipLeftRight 0.75s linear infinite;
       }
     }
     &__einar {
       margin-left: 40px;
       &--fists {
-        left: -75px;
+        left: -55px;
       }
       &--head {
         animation: MoveUpDown 0.5s linear infinite;
@@ -171,10 +173,13 @@ export default {
 
 @keyframes FlipLeftRight {
   0% {
-    transform: scaleX(-1);
+    transform: translateX(-40px) rotate(15deg);
+  }
+  50% {
+    transform: scaleX(-1) translateX(20px) rotate(30deg);
   }
   100% {
-    transform: scaleX(1);
+    transform: rotate(15deg);
   }
 }
 </style>
