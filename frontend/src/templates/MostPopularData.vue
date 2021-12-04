@@ -1,46 +1,40 @@
 <template>
   <b-container class="data">
-    <b-row>
-      <b-col col lg="6">
-        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
-      </b-col>
-      <b-col col lg="6">
-        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
-      </b-col>
-    </b-row>
-    <b-row class="justify-content-md-center">
-      <b-col col lg="6">
-        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
-      </b-col>
-      <b-col col lg="6">
-        <!-- <horizontal-bar-chart :labels="labels" :lines="lines" /> -->
+    <div></div>
+    <b-row v-if="!fetching">
+      <b-col col lg="6" v-for="key in Object.keys(keys)" v-bind:key="key">
+        <horizontal-bar-chart
+          :labels="getLabelsForKey(key)"
+          :lines="getLinesForKey(key)"
+        />
       </b-col>
     </b-row>
   </b-container>
 </template>
 
 <script>
-// import HorizontalBarChart from "../components/HorizontalBarChart.vue";
+import HorizontalBarChart from "../components/HorizontalBarChart.vue";
 import { GET } from "../data/api";
 import { getChartData } from "../utils/helpers";
 export default {
   name: "MostPopularData",
   components: {
-    // HorizontalBarChart,
+    HorizontalBarChart,
   },
 
   async mounted() {
     await this.getMostPopularData();
-    this.setPlots();
   },
   data() {
     return {
       keys: {},
+      fetching: false,
     };
   },
 
   methods: {
     async getMostPopularData() {
+      this.fetching = true;
       await GET.mostPopularData(this.$store.year).then(
         function (data) {
           this.$store.mostPopularData = data;
@@ -51,6 +45,7 @@ export default {
           });
         }.bind(this)
       );
+      this.fetching = false;
     },
 
     getPlots(key) {
@@ -69,7 +64,7 @@ export default {
 
     getLinesForKey(key) {
       const dataObj = this.getPlots(key);
-      return dataObj.lines.slice(0, 5);
+      return [dataObj.lines];
     },
   },
 };

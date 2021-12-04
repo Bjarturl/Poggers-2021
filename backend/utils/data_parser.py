@@ -220,7 +220,7 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             ORDER BY msg_len DESC
         """)
-        with open(f"{self.save_path}/lengstu_skilaboðin_(í_orðum).csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/lengstu_skilaboðin_í_orðum.csv", "w+", encoding="utf-8") as f:
             f.write("Max of msg_len,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -228,7 +228,7 @@ class DataParser:
 
     def meðallengd_skilaboða(self):
         self.cursor.execute(f"""
-        SELECT S.name, truncate(avg(cast(msg_len as float)), 2) as 'Average of msg_len' 
+        SELECT truncate(avg(cast(msg_len as float)), 2) as 'Average of msg_len', S.name 
             FROM messenger_message M join messenger_sender S on M.sender_id = S.id
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
@@ -236,7 +236,7 @@ class DataParser:
             GROUP BY S.name
             ORDER BY  truncate(avg(cast(msg_len as float)), 2) DESC
         """)
-        with open(f"{self.save_path}/meðallengd_skilaboða_(í_orðum).csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/meðallengd_skilaboða_í_orðum.csv", "w+", encoding="utf-8") as f:
             f.write("sender,Average of msg_len\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},\"{str(line[1]).replace('.', ',')}\"\n")

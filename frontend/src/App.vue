@@ -5,7 +5,10 @@
       <b-container class="page-container">
         <component :is="pages[currPage]" />
       </b-container>
-      <Pagination />
+      <div class="app-options">
+        <YearSelector />
+        <Pagination />
+      </div>
     </div>
   </div>
 </template>
@@ -14,6 +17,8 @@
 import { GET } from "./data/api";
 import Loading from "./components/Loading.vue";
 import Pagination from "./components/Pagination.vue";
+import YearSelector from "./components/YearSelector.vue";
+import CharacterCreation from "./templates/CharacterCreation.vue";
 import DataOverTime from "./templates/DataOverTime.vue";
 import MostPopularData from "./templates/MostPopularData.vue";
 export default {
@@ -21,18 +26,29 @@ export default {
   components: {
     Loading,
     Pagination,
+    YearSelector,
   },
 
   data() {
     return {
       fetching: false,
-      pages: [MostPopularData, DataOverTime],
+      pages: [CharacterCreation, MostPopularData, DataOverTime],
       currPage: 0,
     };
   },
 
   mounted() {
     this.getAllData();
+  },
+
+  computed: {
+    year() {
+      return this.$store.year;
+    },
+  },
+
+  watch: {
+    year() {},
   },
 
   methods: {
@@ -44,18 +60,6 @@ export default {
       // setTimeout(() => {
       this.fetching = false;
       // }, 5000);
-    },
-
-    prevPage() {
-      if (this.currPage > 0) {
-        this.currPage -= 1;
-      }
-    },
-
-    nextPage() {
-      if (this.currPage < this.pages.length - 1) {
-        this.currPage += 1;
-      }
     },
   },
 };
@@ -76,7 +80,11 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  align-items: flex-end;
+}
+
+.app-options {
+  display: flex;
+  justify-content: space-between;
 }
 
 .page-container {
