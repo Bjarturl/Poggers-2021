@@ -1,6 +1,7 @@
 const store = {
   year: "all",
   years: ["2016", "2017", "2018", "2019", "2020", "2021", "all"],
+  currPage: 0,
 };
 
 export default {

@@ -187,6 +187,7 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             GROUP BY s.NAME
             ORDER BY COUNT(*) DESC
+            LIMIT 5
         """)
         with open(f"{self.save_path}/flest_skilaboð_send.csv", "w+", encoding="utf-8") as f:
             f.write("Count of message,sender\n")
@@ -204,6 +205,7 @@ class DataParser:
             AND M.is_photo = 1
             GROUP BY S.NAME
             ORDER BY COUNT(*) DESC
+            LIMIT 5
         """)
         with open(f"{self.save_path}/flestar_myndir_sendar.csv", "w+", encoding="utf-8") as f:
             f.write("Count of message,sender\n")
@@ -219,6 +221,7 @@ class DataParser:
             AND timestamp <= '{self.max_date}'
             AND chat_identifier_id = '{self.chat_id}'
             ORDER BY msg_len DESC
+            LIMIT 5
         """)
         with open(f"{self.save_path}/lengstu_skilaboðin_í_orðum.csv", "w+", encoding="utf-8") as f:
             f.write("Max of msg_len,sender\n")
@@ -235,6 +238,7 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             GROUP BY S.name
             ORDER BY  truncate(avg(cast(msg_len as float)), 2) DESC
+            LIMIT 5
         """)
         with open(f"{self.save_path}/meðallengd_skilaboða_í_orðum.csv", "w+", encoding="utf-8") as f:
             f.write("sender,Average of msg_len\n")

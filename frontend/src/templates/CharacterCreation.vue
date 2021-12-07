@@ -1,6 +1,6 @@
 <template>
   <b-container class="character-creation__container">
-    <div class="character">
+    <b-row class="character">
       <div class="character__selection">
         <b-iconstack
           rotate="180"
@@ -76,7 +76,7 @@
           <b-icon stacked icon="chevron-right"></b-icon>
         </b-iconstack>
       </div>
-    </div>
+    </b-row>
     <span class="character__name">{{ name }}</span>
   </b-container>
 </template>
@@ -130,7 +130,7 @@ export default {
 .character-creation {
   &__container {
     height: 550px;
-    min-width: 100%;
+    min-width: 90%;
   }
 }
 
@@ -139,7 +139,7 @@ export default {
   justify-content: space-between;
   align-items: flex-start;
   position: relative;
-  height: 100%;
+  height: 90%;
 
   &__name {
     display: flex;
@@ -167,6 +167,12 @@ export default {
     margin-right: auto;
     width: 400px;
     height: 500px;
+    @include media-breakpoint-down(sm) {
+      & {
+        width: 250px;
+        height: 400px;
+      }
+    }
   }
   &__hair {
     top: 10px;

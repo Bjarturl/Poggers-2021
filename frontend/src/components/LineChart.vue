@@ -1,16 +1,16 @@
 <template>
-  <mdb-container>
+  <mdb-container ref="line">
     <mdb-line-chart
       :data="lineChartData"
       :options="lineChartOptions"
       :width="width"
-      :height="height"
     ></mdb-line-chart>
   </mdb-container>
 </template>
 
 <script>
 import { mdbLineChart, mdbContainer } from "mdbvue";
+
 export default {
   name: "LineChart",
   components: {
@@ -32,10 +32,7 @@ export default {
       default: () => {},
       required: false,
     },
-    width: {
-      type: Number,
-      default: 600,
-    },
+
     height: {
       type: Number,
       default: 300,
@@ -43,7 +40,9 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      width: window.innerWidth,
+    };
   },
 
   computed: {

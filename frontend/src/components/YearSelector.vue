@@ -1,7 +1,11 @@
 <template>
   <div class="year-selector">
     <div class="year-selector__container">
-      <b-form-select v-model="$store.year" :options="$store.years" />
+      <b-form-select
+        :value="$store.year"
+        @change="updateYear"
+        :options="$store.years"
+      />
     </div>
   </div>
 </template>
@@ -14,7 +18,11 @@ export default {
     return {};
   },
 
-  methods: {},
+  methods: {
+    updateYear(year) {
+      this.$emit("update", year);
+    },
+  },
 };
 </script>
 

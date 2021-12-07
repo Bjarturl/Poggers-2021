@@ -37,7 +37,7 @@ export const GET = {
       "flest_skilaboð_send",
       "flestar_myndir_sendar",
       "meðallengd_skilaboða_í_orðum",
-      // "lengstu_skilaboðin_í_orðum",
+      "lengstu_skilaboðin_í_orðum",
     ];
     const data = [];
     for (const endpoint of endpoints) {

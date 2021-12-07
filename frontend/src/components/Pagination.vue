@@ -17,9 +17,7 @@
         font-scale="1.75"
         class="pagination__arrow"
         @click="nextPage"
-        :class="
-          currPage < pages.length - 1 ? '' : 'pagination__arrow--disabled'
-        "
+        :class="currPage < pages - 1 ? '' : 'pagination__arrow--disabled'"
       >
         <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
         <b-icon stacked icon="circle"></b-icon>
@@ -30,17 +28,27 @@
 </template>
 
 <script>
-import DataOverTime from "../templates/DataOverTime.vue";
-import MostPopularData from "../templates/MostPopularData.vue";
 export default {
   name: "Pagination",
 
   data() {
     return {
       fetching: false,
-      pages: [MostPopularData, DataOverTime],
       currPage: 0,
     };
+  },
+
+  props: {
+    pages: {
+      type: Number,
+      required: true,
+    },
+  },
+
+  watch: {
+    currPage() {
+      this.$emit("navigate", this.currPage);
+    },
   },
 
   methods: {
@@ -51,7 +59,7 @@ export default {
     },
 
     nextPage() {
-      if (this.currPage < this.pages.length - 1) {
+      if (this.currPage < this.pages - 1) {
         this.currPage += 1;
       }
     },

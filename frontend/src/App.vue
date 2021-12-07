@@ -1,13 +1,13 @@
 <template>
   <div class="app-container">
     <Loading v-if="fetching" />
-    <div v-else class="container">
+    <div v-else class="main-container">
       <b-container class="page-container">
         <component :is="pages[currPage]" />
       </b-container>
       <div class="app-options">
-        <YearSelector />
-        <Pagination />
+        <YearSelector v-on:update="updateYear" />
+        <Pagination :pages="pages.length" v-on:navigate="updatePage" />
       </div>
     </div>
   </div>
@@ -32,23 +32,13 @@ export default {
   data() {
     return {
       fetching: false,
-      pages: [CharacterCreation, MostPopularData, DataOverTime],
-      currPage: 0,
+      pages: [MostPopularData, DataOverTime, CharacterCreation],
+      currPage: this.$store.currPage,
     };
   },
 
   mounted() {
     this.getAllData();
-  },
-
-  computed: {
-    year() {
-      return this.$store.year;
-    },
-  },
-
-  watch: {
-    year() {},
   },
 
   methods: {
@@ -61,6 +51,14 @@ export default {
       this.fetching = false;
       // }, 5000);
     },
+    updatePage(page) {
+      this.$store.currPage = page;
+      this.currPage = page;
+    },
+    updateYear(year) {
+      this.$store.year = year;
+      this.getAllData();
+    },
   },
 };
 </script>
@@ -72,26 +70,37 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $primary;
-  min-height: 100vh;
+  background-image: url("./assets/poggers_himself.jpg");
+  background-size: 200px 200px;
+  height: 100vh;
 }
 
-.container {
+.main-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  height: 80vh;
+  width: 100%;
 }
 
 .app-options {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .page-container {
   background-color: $gray-400;
   min-height: 80%;
+  width: 90%;
+  min-width: 90%;
   padding: 40px;
   border: 3px solid $black;
   position: relative;
+  overflow: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 </style>
