@@ -103,7 +103,7 @@
             />
           </div>
         </div>
-        <div class="d-flex justify-content-end">
+        <div class="d-flex justify-content-start">
           <b-progress
             :max="stats.HP"
             :value="HP < 0 ? 0 : HP"
@@ -342,7 +342,9 @@ export default {
       await this.performAttack().then(() => {
         this.sleep().then(() => {
           this.attacking = false;
-          this.combatText = `It's ${this.name}'s turn.`;
+          if (!this.finished) {
+            this.combatText = `It's ${this.name}'s turn.`;
+          }
         });
       });
     },
