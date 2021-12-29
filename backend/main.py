@@ -28,7 +28,7 @@ def root():
 def data():
     return {
         "years": os.listdir(f"{os.getcwd()}/data"),
-        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/all")]
+        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/Frá byrjun")]
     }
 
 

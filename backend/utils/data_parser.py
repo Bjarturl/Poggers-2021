@@ -56,7 +56,7 @@ class DataParser:
     # Gives individual reaction data in a specific chat on a specific time interval
     def reactions_per_einstaklingur(self):
         self.cursor.execute(f"""
-            SELECT distinct S.name, R.reaction as emoji, COUNT(R.reaction) as no_occurences
+            SELECT COUNT(R.reaction) as no_occurences, S.name, R.reaction as emoji
             FROM messenger_reaction R 
                 JOIN messenger_message M on R.message_id = M.id
                 JOIN messenger_sender S on R.sender_id = S.id
@@ -68,7 +68,7 @@ class DataParser:
             ORDER BY S.name, no_occurences DESC
         """)
         with open(f"{self.save_path}/reactions_per_einstaklingur.csv", "w+", encoding="utf-8") as f:
-            f.write("name,no_occurences,emoji\n")
+            f.write("no_occurences,name\n")
             name = ""
             count = 0
             vals = []
@@ -78,16 +78,16 @@ class DataParser:
             occ = 0
             tmp = ""
 
-            for actor, emoji, no_occurences in self.cursor.fetchall():
+            for no_occurences, actor, emoji in self.cursor.fetchall():
                 if name == "":
                     name = actor
 
                 if name != actor:
-                    if tmp and occ < int(tmp.split(",")[1]):
+                    if tmp and occ < int(tmp.split(",")[0]):
                         vals.append(tmp)
                     else:
                         if occ > 0:
-                            vals.append(f"{name},{occ},{heart}\n")
+                            vals.append(f"{occ},{name} {heart}\n")
                     random.shuffle(vals)
                     f.write("".join(vals))
                     name = actor
@@ -100,15 +100,15 @@ class DataParser:
                 if emoji in hearts:
                     occ += no_occurences
                 if count < 8 and emoji not in hearts:
-                    vals.append(f"{actor},{no_occurences},{emoji}\n")
+                    vals.append(f"{no_occurences},{actor} {emoji}\n")
                 else:
                     if tmp == "":
-                        tmp = f"{actor},{no_occurences},{emoji}\n"
-            if tmp and occ < int(tmp.split(",")[1]):
+                        tmp = f"{no_occurences},{actor} {emoji}\n"
+            if tmp and occ < int(tmp.split(",")[0]):
                 vals.append(tmp)
             else:
                 if occ > 0:
-                    vals.append(f"{name},{occ},{heart}\n")
+                    vals.append(f"{occ},{name} {heart}\n")
             f.write("".join(vals))
         f.close()
 
@@ -123,6 +123,7 @@ class DataParser:
             and S.name <> ''
             GROUP BY sender
             ORDER BY COUNT(*) DESC
+            LIMIT 5
         """)
         with open(f"{self.save_path}/fékk_flest_reactions.csv", "w+", encoding="utf-8") as f:
             f.write("Count of reaction,sender\n")
@@ -141,7 +142,7 @@ class DataParser:
             ORDER BY day(timestamp) 
         """)
         with open(f"{self.save_path}/fjöldi_skilaboða_eftir_degi.csv", "w+", encoding="utf-8") as f:
-            f.write("Skilaboð,Day\n")
+            f.write("Skilaboð,Dagur\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
@@ -157,7 +158,7 @@ class DataParser:
             ORDER BY Month(timestamp)
         """)
         with open(f"{self.save_path}/fjöldi_skilaboða_eftir_mánuðum.csv", "w+", encoding="utf-8") as f:
-            f.write("Skilaboð,Month\n")
+            f.write("Skilaboð,Mánuður\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
@@ -241,7 +242,7 @@ class DataParser:
             LIMIT 5
         """)
         with open(f"{self.save_path}/meðallengd_skilaboða_í_orðum.csv", "w+", encoding="utf-8") as f:
-            f.write("sender,Average of msg_len\n")
+            f.write("Average of msg_len,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},\"{str(line[1]).replace('.', ',')}\"\n")
         f.close()
@@ -274,9 +275,10 @@ class DataParser:
             AND chat_identifier_id = '{self.chat_id}'
             GROUP BY S.name
             ORDER BY COUNT(*) DESC
+            LIMIT 5
         """)
         with open(f"{self.save_path}/reactaði_oftast.csv", "w+", encoding="utf-8") as f:
-            f.write("Count of reaction,actor\n")
+            f.write("Count of reaction,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
@@ -315,7 +317,7 @@ class DataParser:
         save_path_root = self.save_path
 
         self.set_dates(min_year, curr_year)
-        self.set_save_path(f'{save_path_root}/all')
+        self.set_save_path(f'{save_path_root}/Frá byrjun')
         print(f"Years: {min_year} - {curr_year}")
         self.create_all()
         for i in range(min_year, curr_year+1):

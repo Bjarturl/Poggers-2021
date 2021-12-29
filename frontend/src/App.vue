@@ -21,6 +21,8 @@ import YearSelector from "./components/YearSelector.vue";
 import CharacterCreation from "./templates/CharacterCreation.vue";
 import DataOverTime from "./templates/DataOverTime.vue";
 import MostPopularData from "./templates/MostPopularData.vue";
+import ReactionData from "./templates/ReactionData.vue";
+import Timeline from "./templates/Timeline.vue";
 export default {
   name: "App",
   components: {
@@ -32,7 +34,13 @@ export default {
   data() {
     return {
       fetching: false,
-      pages: [MostPopularData, DataOverTime, CharacterCreation],
+      pages: [
+        CharacterCreation,
+        Timeline,
+        ReactionData,
+        MostPopularData,
+        DataOverTime,
+      ],
       currPage: this.$store.currPage,
     };
   },

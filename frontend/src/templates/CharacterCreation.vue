@@ -6,7 +6,7 @@
           rotate="180"
           font-scale="1.75"
           class="pagination__arrow"
-          @click="prev('hair')"
+          @click="prev('base')"
         >
           <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
           <b-icon stacked icon="circle"></b-icon>
@@ -16,7 +16,7 @@
           rotate="180"
           font-scale="1.75"
           class="pagination__arrow"
-          @click="prev('upper')"
+          @click="prev('augu')"
         >
           <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
           <b-icon stacked icon="circle"></b-icon>
@@ -26,7 +26,7 @@
           rotate="180"
           font-scale="1.75"
           class="pagination__arrow"
-          @click="prev('lower')"
+          @click="prev('munnur')"
         >
           <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
           <b-icon stacked icon="circle"></b-icon>
@@ -35,23 +35,23 @@
       </div>
       <div class="face">
         <img
-          class="face__part face__hair"
-          :src="require(`../assets/faces/hair/${characters[hair]}.png`)"
+          class="face__part face__base"
+          :src="require(`../assets/faces/${characters[base]}/base.png`)"
         />
         <img
-          class="face__part face__upper"
-          :src="require(`../assets/faces/upper/${characters[upper]}.png`)"
+          class="face__part face__augu"
+          :src="require(`../assets/faces/${characters[augu]}/augu.png`)"
         />
         <img
-          class="face__part face__lower"
-          :src="require(`../assets/faces/lower/${characters[lower]}.png`)"
+          class="face__part face__munnur"
+          :src="require(`../assets/faces/${characters[munnur]}/munnur.png`)"
         />
       </div>
       <div class="character__selection">
         <b-iconstack
           font-scale="1.75"
           class="pagination__arrow"
-          @click="next('hair')"
+          @click="next('base')"
         >
           <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
           <b-icon stacked icon="circle"></b-icon>
@@ -60,7 +60,7 @@
         <b-iconstack
           font-scale="1.75"
           class="pagination__arrow"
-          @click="next('upper')"
+          @click="next('augu')"
         >
           <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
           <b-icon stacked icon="circle"></b-icon>
@@ -69,7 +69,7 @@
         <b-iconstack
           font-scale="1.75"
           class="pagination__arrow"
-          @click="next('lower')"
+          @click="next('munnur')"
         >
           <b-icon stacked icon="circle-fill" variant="secondary"></b-icon>
           <b-icon stacked icon="circle"></b-icon>
@@ -88,19 +88,39 @@ export default {
   components: {},
 
   data() {
+    const chars = [
+      "Ægir",
+      "Bjartur",
+      "Ásgrímur",
+      "Einar",
+      "Eyvindur",
+      "Finnbogi",
+      "Helgi",
+      "Hjálmar",
+      "Jóhannes",
+      "Arnaldur",
+    ];
+    const start = Math.floor(Math.random() * chars.length);
     return {
-      characters: ["eyvindur", "ingvar"],
-      hair: 0,
-      upper: 0,
-      lower: 0,
+      characters: chars.sort(() => 0.5 - Math.random()),
+      munnur: start,
+      base: start,
+      augu: start,
     };
   },
 
   computed: {
     name() {
-      const first = this.splitString(this.characters[this.hair]);
-      const middle = this.splitString(this.characters[this.upper]);
-      const last = this.splitString(this.characters[this.lower]);
+      if (
+        this.characters[this.augu].length === 4 &&
+        this.characters[this.base].length === 4 &&
+        this.characters[this.munnur].length === 4
+      ) {
+        return this.characters[this.augu];
+      }
+      const first = this.splitString(this.characters[this.base]);
+      const middle = this.splitString(this.characters[this.augu]);
+      const last = this.splitString(this.characters[this.munnur]);
       const name = first[0] + middle[1] + last[last.length - 1];
       return capitalizeFirstLetter(name);
     },
@@ -174,10 +194,10 @@ export default {
       }
     }
   }
-  &__hair {
+  &__munnur {
     top: 10px;
   }
-  &__lower {
+  &__augu {
     z-index: 10;
   }
 }

@@ -5,6 +5,13 @@ const fetchUrl = async (url) => {
     .then((response) => response.json())
     .then((data) => data);
 };
+const fetchAllEndpoints = async (endpoints, year) => {
+  const data = [];
+  for (const endpoint of endpoints) {
+    data.push(await fetchUrl(`${API_URL}/data/${year}/${endpoint}`));
+  }
+  return data;
+};
 
 export const GET = {
   async dataByYear(year, name) {
@@ -25,11 +32,7 @@ export const GET = {
       "fjöldi_skilaboða_eftir_mánuðum",
       "fjöldi_skilaboða_eftir_tíma_dags",
     ];
-    const data = [];
-    for (const endpoint of endpoints) {
-      data.push(await fetchUrl(`${API_URL}/data/${year}/${endpoint}`));
-    }
-    return data;
+    return await fetchAllEndpoints(endpoints, year);
   },
 
   async mostPopularData(year) {
@@ -39,35 +42,26 @@ export const GET = {
       "meðallengd_skilaboða_í_orðum",
       "lengstu_skilaboðin_í_orðum",
     ];
-    const data = [];
-    for (const endpoint of endpoints) {
-      data.push(await fetchUrl(`${API_URL}/data/${year}/${endpoint}`));
-    }
-    return data;
+    return await fetchAllEndpoints(endpoints, year);
   },
 
-  //     async test() {
-  //         "fékk_flest_reactions"
-  // "reactaði_oftast"
-  // "reactions_per_einstaklingur"
-  //         const url = `${API_URL}/data`
-  //         const data = await fetchUrl(url)
-  //         return data
-  //     },
+  async reactionData(year) {
+    const endpoints = [
+      "fékk_flest_reactions",
+      "reactaði_oftast",
+      "reactions_per_einstaklingur",
+    ];
+    return await fetchAllEndpoints(endpoints, year);
+  },
+
+  async nameData(year) {
+    const endpoints = ["nafnið"];
+    return await fetchAllEndpoints(endpoints, year);
+  },
 
   //     async test() {
   //         "heildarfjöldi_mynda"
   // "heildarfjöldi_skilaboða"
-  // "lengstu_skilaboðin_(í_orðum)"
-  // "meðallengd_skilaboða_(í_orðum)"
-  //         const url = `${API_URL}/data`
-  //         const data = await fetchUrl(url)
-  //         return data
-  //     },
-
-  //     async test() {
-  //         "nafnið"
-
   //         const url = `${API_URL}/data`
   //         const data = await fetchUrl(url)
   //         return data
