@@ -283,6 +283,81 @@ class DataParser:
                 f.write(f"{line[0]},{line[1]}\n")
         f.close()
 
+    def get_stats(self):
+        self.cursor.execute(f"""
+            SELECT S.name, round(count(*) / 100, 0) as 'ATK', (2500 - MAX(msg_len)) / 2500 as 'ACC'
+            from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
+            WHERE timestamp >= '{self.min_date}' 
+            AND timestamp <= '{self.max_date}'
+            AND chat_identifier_id = '{self.chat_id}'
+            GROUP BY s.NAME
+        """)
+        names = {}
+        for line in self.cursor.fetchall():
+            name = line[0]
+            if name not in names:
+                names[name] = {}
+            names[name]['ATK'] = line[1]
+            names[name]['ACC'] = float(line[2])
+
+        self.cursor.execute(f"""
+            SELECT S.name as sender, round(count(*) / 10, 0) as 'HP'
+            from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
+            join messenger_sender S on S.id = R.sender_id
+            where R.timestamp >= '{self.min_date}' 
+            AND R.timestamp <= '{self.max_date}'
+            AND chat_identifier_id = '{self.chat_id}'
+            and S.name <> ''
+            GROUP BY sender
+            ORDER BY COUNT(*) DESC
+        """)
+        for line in self.cursor.fetchall():
+            name = line[0]
+            if name not in names:
+                names[name] = {}
+            names[name]['HP'] = line[1]
+        self.cursor.execute(f"""
+            SELECT S.name, (COUNT(*) / 20000) as 'CRIT'
+            from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
+            join messenger_sender S ON M.sender_id = S.id
+            where R.timestamp >= '{self.min_date}' 
+            AND R.timestamp <= '{self.max_date}'
+            AND chat_identifier_id = '{self.chat_id}'
+            and S.name <> ''
+            GROUP BY S.name
+        """)
+        for line in self.cursor.fetchall():
+            name = line[0]
+            if name not in names:
+                names[name] = {}
+            names[name]['CRIT'] = float(line[1])
+        self.cursor.execute(f"""
+            SELECT S.name, round((8500 - COUNT(*)) / 8500 / 3, 2) as 'DEF'
+            from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
+            WHERE timestamp >= '{self.min_date}' 
+            AND timestamp <= '{self.max_date}'
+            AND chat_identifier_id = '{self.chat_id}'
+            AND M.is_photo = 1
+            GROUP BY S.NAME
+        """)
+        for line in self.cursor.fetchall():
+            name = line[0]
+            if name not in names:
+                names[name] = {}
+            names[name]['DEF'] = float(line[1])
+
+        with open(f"{self.save_path}/battle_stats.csv", "w+", encoding="utf-8") as f:
+            f.write("Name,ATK,ACC,HP,CRIT,DEF\n")
+            for name in names:
+                ATK = names[name]['ATK'] if 'ATK' in names[name] else 0
+                ACC = names[name]['ACC'] if 'ACC' in names[name] else 0
+                HP = names[name]['HP'] if 'HP' in names[name] else 0
+                CRIT = names[name]['CRIT'] if 'CRIT' in names[name] else 0
+                DEF = names[name]['DEF'] if 'DEF' in names[name] else 0
+                f.write(
+                    f"{name},{ATK},{ACC},{HP},{CRIT},{DEF}\n")
+        f.close()
+
     def create_all(self):
         print("Executing heildarfjöldi_skilaboða()...")
         self.heildarfjöldi_skilaboða()
@@ -310,6 +385,8 @@ class DataParser:
         self.nafnið()
         print("Executing reactaði_oftast()...")
         self.reactaði_oftast()
+        print("Executing get_stats()...")
+        self.get_stats()
 
     def data_by_years(self):
         min_year = get_min_year(self.chat_id)

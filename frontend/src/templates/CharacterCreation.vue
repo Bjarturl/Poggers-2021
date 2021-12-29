@@ -1,5 +1,6 @@
 <template>
-  <b-container class="character-creation__container">
+  <Loading v-if="fetching" />
+  <b-container class="character-creation__container" v-else-if="!fighting">
     <b-row class="character">
       <div class="character__selection">
         <b-iconstack
@@ -78,14 +79,130 @@
       </div>
     </b-row>
     <span class="character__name">{{ name }}</span>
+    <button class="btn btn-danger character__button" @click="startFight">
+      Smelltu hér til að berjast!
+    </button>
+  </b-container>
+  <!-- FIGHTING -->
+  <b-container v-else class="fight-container">
+    <div class="fighter__container">
+      <div class="fighter">
+        <div class="fighter__face">
+          <div class="face">
+            <img
+              class="face__part face__base"
+              :src="require(`../assets/faces/${characters[base]}/base.png`)"
+            />
+            <img
+              class="face__part face__augu"
+              :src="require(`../assets/faces/${characters[augu]}/augu.png`)"
+            />
+            <img
+              class="face__part face__munnur"
+              :src="require(`../assets/faces/${characters[munnur]}/munnur.png`)"
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <b-progress
+            :max="stats.HP"
+            :value="HP < 0 ? 0 : HP"
+            height="2rem"
+            class="w-75 text-center"
+            variant="success"
+            animated
+            show-value
+          >
+          </b-progress>
+        </div>
+        <div class="fighter__stats">
+          <span class="fighter__stats--name">{{ name }}</span>
+          <span>ATK: {{ stats.ATK }}</span>
+          <span>DEF: {{ stats.DEF }}%</span>
+          <span>HP: {{ stats.HP }}</span>
+          <span>CRIT: {{ stats.CRIT }}%</span>
+          <span>ACC: {{ stats.ACC }}%</span>
+          <button
+            class="btn btn-info mt-4"
+            v-if="!attacking && !finished"
+            @click="attack"
+          >
+            Attack!
+          </button>
+        </div>
+      </div>
+      <div>
+        <img class="vs" :src="require(`../assets/vs.png`)" />
+      </div>
+      <div class="fighter fighter__computer">
+        <div class="fighter__face">
+          <div class="face">
+            <img
+              class="face__part face__base"
+              :src="
+                require(`../assets/faces/${characters[opponentBase]}/base.png`)
+              "
+            />
+            <img
+              class="face__part face__augu"
+              :src="
+                require(`../assets/faces/${characters[opponentAugu]}/augu.png`)
+              "
+            />
+            <img
+              class="face__part face__munnur"
+              :src="
+                require(`../assets/faces/${characters[opponentMunnur]}/munnur.png`)
+              "
+            />
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <b-progress
+            :max="opponentStats.HP"
+            :value="opponentHP < 0 ? 0 : opponentHP"
+            height="2rem"
+            class="w-75 text-center"
+            variant="success"
+            animated
+            show-value
+          >
+          </b-progress>
+        </div>
+        <div class="fighter__stats">
+          <span class="fighter__stats--name">{{ opponentName }} (AI)</span>
+          <span>ATK: {{ opponentStats.ATK }}</span>
+          <span>DEF: {{ opponentStats.DEF }}%</span>
+          <span>HP: {{ opponentStats.HP }}</span>
+          <span>CRIT: {{ opponentStats.CRIT }}%</span>
+          <span>ACC: {{ opponentStats.ACC }}%</span>
+        </div>
+      </div>
+    </div>
+    <div class="combat-text">
+      <span>{{ combatText }}</span>
+    </div>
+    <div>
+      <span class="tooltip">Stats eru reiknuð út frá þáttöku í spjallinu</span>
+      <button
+        class="btn btn-danger character__button"
+        @click="fighting = false"
+      >
+        Til baka
+      </button>
+    </div>
   </b-container>
 </template>
 
 <script>
 import { capitalizeFirstLetter } from "../utils/helpers";
+import { GET } from "../data/api";
+import Loading from "../components/Loading.vue";
 export default {
   name: "CharacterCreation",
-  components: {},
+  components: {
+    Loading,
+  },
 
   data() {
     const chars = [
@@ -99,6 +216,11 @@ export default {
       "Hjálmar",
       "Jóhannes",
       "Arnaldur",
+      "Ingvar",
+      "Jón Egill",
+      "Kristófer",
+      "Manfreð",
+      "Sindri",
     ];
     const start = Math.floor(Math.random() * chars.length);
     return {
@@ -106,23 +228,31 @@ export default {
       munnur: start,
       base: start,
       augu: start,
+      stats: {},
+      opponentStats: {},
+      fighting: false,
+      opponentBase: 0,
+      opponentAugu: 0,
+      opponentMunnur: 0,
+      fetching: false,
+      combatText: "",
+      attacking: false,
+      finished: false,
+      HP: 0,
+      opponentHP: 0,
     };
   },
 
   computed: {
     name() {
-      if (
-        this.characters[this.augu].length === 4 &&
-        this.characters[this.base].length === 4 &&
-        this.characters[this.munnur].length === 4
-      ) {
-        return this.characters[this.augu];
-      }
-      const first = this.splitString(this.characters[this.base]);
-      const middle = this.splitString(this.characters[this.augu]);
-      const last = this.splitString(this.characters[this.munnur]);
-      const name = first[0] + middle[1] + last[last.length - 1];
-      return capitalizeFirstLetter(name);
+      return this.getName(this.augu, this.base, this.munnur);
+    },
+    opponentName() {
+      return this.getName(
+        this.opponentAugu,
+        this.opponentBase,
+        this.opponentMunnur
+      );
     },
   },
 
@@ -130,12 +260,197 @@ export default {
     next(type) {
       this[type] = (this[type] + 1) % this.characters.length;
     },
+    async fetchData() {
+      this.fetching = true;
+      this.stats = {
+        ATK: 0,
+        DEF: 0,
+        ACC: 0,
+        CRIT: 0,
+        HP: 0,
+      };
+      this.opponentStats = Object.assign({}, this.stats);
+      await GET.battleStats(this.$store.year).then(
+        function (data) {
+          const statsArray = data[0]["battle_stats"];
+          let user = [
+            this.characters[this.augu],
+            this.characters[this.base],
+            this.characters[this.munnur],
+          ];
+          let computer = [
+            this.characters[this.opponentAugu],
+            this.characters[this.opponentBase],
+            this.characters[this.opponentMunnur],
+          ];
+          for (let u of user) {
+            let userStats = statsArray.find(
+              (s) => s.Name.split(" ")[0] === u.split(" ")[0]
+            );
+            this.stats.ATK += userStats.ATK;
+            this.stats.DEF += userStats.DEF;
+            this.stats.ACC += userStats.ACC;
+            this.stats.CRIT += userStats.CRIT;
+            this.stats.HP += userStats.HP;
+          }
+          this.stats.ATK = (this.stats.ATK / 3).toFixed(0);
+          this.stats.DEF = ((this.stats.DEF / 3) * 100).toFixed(2);
+          this.stats.ACC = ((this.stats.ACC / 3) * 100).toFixed(2);
+          this.stats.CRIT = ((this.stats.CRIT / 3) * 100).toFixed(2);
+          this.stats.HP = (this.stats.HP / 3).toFixed(0);
+          for (let u of computer) {
+            let opponentStats = statsArray.find(
+              (s) => s.Name.split(" ")[0] === u.split(" ")[0]
+            );
+            this.opponentStats.ATK += opponentStats.ATK;
+            this.opponentStats.DEF += opponentStats.DEF;
+            this.opponentStats.ACC += opponentStats.ACC;
+            this.opponentStats.CRIT += opponentStats.CRIT;
+            this.opponentStats.HP += opponentStats.HP;
+          }
+          this.opponentStats.ATK = (this.opponentStats.ATK / 3).toFixed(0);
+          this.opponentStats.DEF = ((this.opponentStats.DEF / 3) * 100).toFixed(
+            2
+          );
+          this.opponentStats.ACC = ((this.opponentStats.ACC / 3) * 100).toFixed(
+            2
+          );
+          this.opponentStats.CRIT = (
+            (this.opponentStats.CRIT / 3) *
+            100
+          ).toFixed(2);
+          this.opponentStats.HP = (this.opponentStats.HP / 3).toFixed(0);
+        }.bind(this)
+      );
+      this.fetching = false;
+      this.HP = this.stats.HP;
+      this.opponentHP = this.opponentStats.HP;
+      this.combatText = `It's ${this.name}'s turn.`;
+    },
     prev(type) {
       if (this[type] === 0) {
         this[type] = this.characters.length - 1;
       } else {
         this[type] -= 1;
       }
+    },
+    async sleep(time = 2000) {
+      return await new Promise((r) => setTimeout(r, time));
+    },
+    async attack() {
+      this.attacking = true;
+      await this.performAttack().then(() => {
+        this.sleep().then(() => {
+          this.attacking = false;
+          this.combatText = `It's ${this.name}'s turn.`;
+        });
+      });
+    },
+    async performAttack() {
+      const attacks = [
+        "bites",
+        "shanks",
+        "licks",
+        "kicks",
+        "punches",
+        "headbutts",
+        "pinches",
+        "vomits on",
+      ];
+
+      let places = ["head", "tooth", "face", "leg", "arm", "ass", "ear"];
+      this.combatText = `${this.name} ${
+        attacks[Math.floor(Math.random() * attacks.length)]
+      } ${this.opponentName} in the ${
+        places[Math.floor(Math.random() * places.length)]
+      }...`;
+      await this.sleep();
+      let acc = Math.random();
+      let def = Math.random();
+      let crit = Math.random();
+      if (acc > this.stats.ACC / 100) {
+        this.combatText = `${this.name} misses his attack. Vandró...`;
+        return;
+      }
+      if (def <= this.opponentStats.DEF / 100) {
+        this.combatText = `${this.opponentName} blocks the attack from ${this.name}. Tekinn lúser...`;
+        return;
+      }
+      if (crit <= this.opponentStats.CRIT / 100) {
+        this.combatText = `${this.name} attacks ${
+          this.opponentName
+        } WITH A CRITICAL HIT, dealing ${this.stats.ATK * 2} points of damage.`;
+        this.opponentHP -= this.stats.ATK * 2;
+      } else {
+        this.combatText = `${this.name} delivers a devastating blow to ${this.opponentName}, inflicting ${this.stats.ATK} points of damage.`;
+        this.opponentHP -= this.stats.ATK;
+      }
+
+      await this.sleep(2000);
+      if (this.opponentHP <= 0) {
+        this.finished = true;
+        this.combatText = `${this.name} has defeated ${this.opponentName} in glorious combat!!`;
+        return;
+      }
+      this.combatText = `It's ${this.opponentName} (AI)'s turn.`;
+      await this.sleep(3000);
+
+      this.combatText = `${this.opponentName} ${
+        attacks[Math.floor(Math.random() * attacks.length)]
+      } ${this.name} in the ${
+        places[Math.floor(Math.random() * places.length)]
+      }...`;
+      await this.sleep();
+      acc = Math.random();
+      def = Math.random();
+      crit = Math.random();
+      if (acc > this.opponentStats.ACC / 100) {
+        this.combatText = `${this.opponentName} misses his attack. Vandró...`;
+        return;
+      }
+      if (def <= this.stats.DEF / 100) {
+        this.combatText = `${this.name} blocks the attack from ${this.opponentName}. Tekinn lúser...`;
+        return;
+      }
+      if (crit <= this.stats.CRIT / 100) {
+        this.combatText = `${this.opponentName} attacks ${
+          this.name
+        } WITH A CRITICAL HIT, dealing ${
+          this.opponentStats.ATK * 2
+        } points of damage.`;
+        this.HP -= this.opponentStats.ATK * 2;
+      } else {
+        this.combatText = `${this.opponentName} delivers a devastating blow to ${this.name}, inflicting ${this.opponentStats.ATK} points of damage.`;
+        this.HP -= this.opponentStats.ATK;
+      }
+      if (this.HP <= 0) {
+        await this.sleep();
+        this.finished = true;
+        this.combatText = `${this.opponentName} has defeated ${this.name} in glorious combat!!`;
+        return;
+      }
+    },
+    getName(augu, base, munnur) {
+      if (
+        this.characters[augu].length === 4 &&
+        this.characters[base].length === 4 &&
+        this.characters[munnur].length === 4
+      ) {
+        return this.characters[augu];
+      }
+      const first = this.splitString(this.characters[base]);
+      const middle = this.splitString(this.characters[augu]);
+      const last = this.splitString(this.characters[munnur]);
+      const name = first[0] + middle[1] + last[last.length - 1];
+      return capitalizeFirstLetter(name);
+    },
+    async startFight() {
+      this.fighting = true;
+      this.finished = false;
+      this.opponentBase = Math.floor(Math.random() * this.characters.length);
+      this.opponentAugu = Math.floor(Math.random() * this.characters.length);
+      this.opponentMunnur = Math.floor(Math.random() * this.characters.length);
+      await this.fetchData();
     },
     splitString(string) {
       const regex = RegExp(".{1," + Math.ceil(string.length / 3) + "}", "g");
@@ -147,10 +462,93 @@ export default {
 
 <style lang="scss">
 @import "~@/assets/scss/vendors/bootstrap-vue/index";
+
+.combat-text {
+  position: absolute;
+  bottom: 65px;
+  width: 70%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 20px;
+}
+
 .character-creation {
   &__container {
     height: 550px;
     min-width: 90%;
+  }
+}
+
+.fight-container {
+  height: 750px;
+  min-width: 90%;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-style: italic;
+}
+
+.vs {
+  height: 100px;
+  width: 150px;
+  margin-top: 60px;
+}
+
+.fighter {
+  width: 50%;
+  position: relative;
+  &__container {
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
+  &__face {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__stats {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    &--name {
+      font-weight: normal;
+      font-size: 20px;
+    }
+    position: absolute;
+    left: 70px;
+    right: auto;
+  }
+  .face {
+    height: 250px;
+    &__part {
+      width: 200px;
+      height: 250px;
+      left: 0;
+      right: auto;
+      top: 5px;
+    }
+  }
+  &__computer {
+    .fighter__stats {
+      position: absolute;
+      left: auto;
+      right: 70px;
+    }
+    .face {
+      &__part {
+        left: auto;
+        right: 0;
+      }
+    }
   }
 }
 
@@ -160,6 +558,12 @@ export default {
   align-items: flex-start;
   position: relative;
   height: 90%;
+
+  &__button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+  }
 
   &__name {
     display: flex;

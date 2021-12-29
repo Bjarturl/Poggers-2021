@@ -59,6 +59,16 @@ export const GET = {
     return await fetchAllEndpoints(endpoints, year);
   },
 
+  async allTimeData(year) {
+    const endpoints = ["heildarfjöldi_mynda", "heildarfjöldi_skilaboða"];
+    return await fetchAllEndpoints(endpoints, year);
+  },
+
+  async battleStats(year) {
+    const endpoints = ["battle_stats"];
+    return await fetchAllEndpoints(endpoints, year);
+  },
+
   //     async test() {
   //         "heildarfjöldi_mynda"
   // "heildarfjöldi_skilaboða"
