@@ -563,7 +563,6 @@ export default {
     margin-top: -70px;
     @include media-breakpoint-down(sm) {
       & {
-        margin-top: -150px;
         width: 100%;
         margin-left: 0;
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="loading__container">
+  <div class="loading__container pb-5">
     <div class="loading">
       <div class="loading__character loading__character__ingvar">
         <div class="loading__fists loading__character__ingvar--fists">
