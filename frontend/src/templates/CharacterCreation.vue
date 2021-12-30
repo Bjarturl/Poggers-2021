@@ -585,6 +585,8 @@ export default {
 .fight-container {
   height: 100%;
   min-width: 90%;
+  font-family: "Fredoka one";
+  font-size: 16px;
 }
 
 .tooltip {
