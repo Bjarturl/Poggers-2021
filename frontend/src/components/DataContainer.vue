@@ -87,7 +87,13 @@ export default {
     getLabelsForKey(key) {
       const dataObj = this.getPlots(key);
       return dataObj.labels.map((l) =>
-        typeof l === "string" ? l.split(" ")[0] : l
+        typeof l === "string"
+          ? `${l.split(" ")[0]} ${
+              l.split(" ")[l.split(" ").length - 1].length < 4
+                ? l.split(" ")[l.split(" ").length - 1]
+                : ""
+            }`
+          : l
       );
     },
 
