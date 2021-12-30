@@ -1,5 +1,5 @@
 <template>
-  <b-container class="data">
+  <b-container class="data pb-4">
     <b-row v-if="!fetching && data">
       <b-col
         class="data__item"
@@ -16,9 +16,7 @@
         />
       </b-col>
     </b-row>
-    <b-row v-else>
-      <Loading />
-    </b-row>
+    <Loading v-else />
   </b-container>
 </template>
 
@@ -72,7 +70,9 @@ export default {
           });
         }.bind(this)
       );
-      this.fetching = false;
+      setTimeout(() => {
+        this.fetching = false;
+      }, 2000);
     },
 
     getPlots(key) {
@@ -111,6 +111,15 @@ export default {
   overflow: hidden;
   text-align: center;
   &__item {
+    @include media-breakpoint-down(sm) {
+      & {
+        border: none;
+        border-bottom: 3px solid black;
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
     border: 3px solid black;
     padding: 20px;
   }

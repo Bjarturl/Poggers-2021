@@ -59,14 +59,24 @@ export default {
 
     lineChartOptions() {
       return {
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: false,
+        legend: {
+          labels: {
+            fontColor: "#fff",
+            fontSize: 18,
+            boxWidth: 0,
+          },
+        },
         scales: {
           xAxes: [
             {
               gridLines: {
                 display: true,
                 color: "rgba(0, 0, 0, 0.1)",
+              },
+              ticks: {
+                fontColor: "#FFFFFF",
               },
             },
           ],
@@ -75,6 +85,9 @@ export default {
               gridLines: {
                 display: true,
                 color: "rgba(0, 0, 0, 0.1)",
+              },
+              ticks: {
+                fontColor: "#FFFFFF",
               },
             },
           ],

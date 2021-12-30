@@ -1,6 +1,6 @@
 <template>
-  <b-container class="w-100 h-100" v-if="!fetching">
-    <h1 class="text-center">P O G G E R S</h1>
+  <b-container class="w-100 h-75 timeline" v-if="!fetching">
+    <h1 class="text-center">POGGERS 2021</h1>
     <div class="pyro h-100" v-if="!fetching">
       <div class="before"></div>
       <div
@@ -49,7 +49,9 @@ export default {
           data[1]["heildarfjöldi_skilaboða"][0]["Heildarfjöldi skilaboða"];
       }.bind(this)
     );
-    this.fetching = false;
+    setTimeout(() => {
+      this.fetching = false;
+    }, 2000);
   },
 
   data() {
@@ -73,6 +75,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
+.page-container {
+  min-height: 90%;
+}
 $particles: 50;
 $width: 500;
 $height: 500;
@@ -143,14 +148,6 @@ $box-shadow2: ();
   -webkit-transform: $settings;
   -o-transform: $settings;
   -ms-transform: $settings;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  background: #000;
-  overflow: hidden;
-  font-family: "Courier New", Courier, monospace;
 }
 
 .pyro > .before,

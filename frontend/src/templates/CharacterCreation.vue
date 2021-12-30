@@ -1,7 +1,6 @@
 <template>
   <Loading v-if="fetching" />
   <b-container class="character-creation__container" v-else-if="!fighting">
-    <h1 class="text-center">{{ name }}</h1>
     <b-row class="character">
       <div class="character__selection">
         <b-iconstack
@@ -78,13 +77,17 @@
           <b-icon stacked icon="chevron-right"></b-icon>
         </b-iconstack>
       </div>
+      <div class="w-100 d-flex justify-content-between pt-5">
+        <button
+          class="character__button character__button--random"
+          @click="randomize"
+        >
+          Random
+        </button>
+        <h1 class="text-center">{{ name }}</h1>
+        <button class="character__button" @click="startFight">BERJAST!!</button>
+      </div>
     </b-row>
-    <button class="btn btn-info character__button--random" @click="randomize">
-      Random
-    </button>
-    <button class="btn btn-success character__button" @click="startFight">
-      Smelltu hér til að berjast!
-    </button>
   </b-container>
   <!-- FIGHTING -->
   <b-container
@@ -115,7 +118,7 @@
             :max="stats.HP"
             :value="HP < 0 ? 0 : HP"
             height="2rem"
-            class="w-75 text-center front"
+            class="w-75 text-center"
             variant="success"
             animated
             show-value
@@ -130,11 +133,11 @@
           <span>CRIT: {{ stats.CRIT }}%</span>
           <span>ACC: {{ stats.ACC }}%</span>
           <button
-            class="btn btn-info mt-4"
+            class="character__button character__button--random mt-4"
             v-if="!attacking && !finished"
             @click="attack"
           >
-            Attack!
+            ÁRÁS
           </button>
         </div>
       </div>
@@ -186,43 +189,53 @@
         </div>
       </div>
     </div>
-    <div class="combat-text">
-      <span>{{ combatText }}</span>
-    </div>
-    <div>
-      <span class="tooltip"
-        >Stats eru reiknuð út frá þáttöku í spjallinu
-        <span>
-          <b-icon
-            id="question-tooltip"
-            icon="question-circle"
-            style="width: 15px; height: 15px"
-          ></b-icon>
-          <b-tooltip target="question-tooltip" triggers="hover click">
-            <div class="tooltip__tip d-flex flex-column">
-              <span><strong>ATK: </strong>Fjöldi sendra skilaboða</span>
-              <span><strong>DEF: </strong> Fjöldi sendra mynda</span>
-              <span><strong>MAX HP: </strong> Fjöldi reactions fengin</span>
-              <span
-                ><strong>CRIT: </strong> Fjöldi reactions sem manneskja gaf
-                (fleiri = minna crit)</span
-              >
-              <span
-                ><strong>ACC: </strong>Lengsta skilaboð sent (styttra = betra
-                accuracy)
-              </span>
-              <span>ATH. stats breytast eftir því hvaða ár er valið</span>
-            </div>
-          </b-tooltip>
-        </span>
-      </span>
+    <div class="w-100 d-flex justify-content-between footer-container">
       <button
-        class="btn btn-danger character__button"
-        v-if="!attacking"
-        @click="fighting = false"
+        class="character__button--stop w-25"
+        :disabled="attacking"
+        @click="stopFight"
       >
-        Til baka
+        <b-icon icon="arrow-left" style="width: 15px; height: 15px"></b-icon>
+        Hætta
       </button>
+      <div class="footer-container__combat w-100">
+        <span>{{ combatText }}</span>
+      </div>
+      <div class="w-50 text-left">
+        <span class="font-italic"
+          >Stats
+          <span class="ml-1">
+            <b-icon
+              id="question-tooltip"
+              icon="question-circle"
+              style="width: 15px; height: 15px"
+            ></b-icon>
+            <b-tooltip
+              target="question-tooltip"
+              triggers="hover click"
+              placement="topleft"
+            >
+              <div class="tooltip__tip d-flex flex-column">
+                <span><strong>ATK: </strong>Fjöldi sendra skilaboða</span>
+                <span><strong>DEF: </strong> Fjöldi sendra mynda</span>
+                <span><strong>MAX HP: </strong> Fjöldi reactions fengin</span>
+                <span
+                  ><strong>CRIT: </strong> Fjöldi reactions sem manneskja gaf
+                  (fleiri = minna crit)</span
+                >
+                <span
+                  ><strong>ACC: </strong>Lengsta skilaboð sent (styttra = betra
+                  accuracy)
+                </span>
+
+                <span class="mt-2"
+                  >ATH. stats breytast eftir því hvaða ár er valið</span
+                >
+              </div>
+            </b-tooltip>
+          </span>
+        </span>
+      </div>
     </div>
   </b-container>
 </template>
@@ -292,6 +305,10 @@ export default {
   methods: {
     next(type) {
       this[type] = (this[type] + 1) % this.characters.length;
+    },
+    stopFight() {
+      this.fighting = false;
+      this.$emit("toggling", false);
     },
     async fetchData() {
       this.fetching = true;
@@ -370,6 +387,24 @@ export default {
     async sleep(time = 2000) {
       return await new Promise((r) => setTimeout(r, time));
     },
+
+    async writeCombatText() {
+      await new Promise((r) => {
+        let str = this.combatText;
+        let index = 0;
+        this.combatText = "";
+        let interval = setInterval(() => {
+          if (this.combatText.length < str.length) {
+            this.combatText = str.substring(0, index);
+            index += 1;
+          } else {
+            clearInterval(interval);
+            return setTimeout(r, 1000);
+          }
+        }, 50);
+      });
+    },
+
     async attack() {
       this.attacking = true;
       await this.performAttack().then(() => {
@@ -393,25 +428,33 @@ export default {
         "vomits on",
       ];
 
-      let places = ["head", "tooth", "face", "leg", "arm", "ass", "ear"];
+      let places = [
+        "head",
+        "tooth",
+        "face",
+        "leg",
+        "arm",
+        "ass",
+        "ear",
+        "pener",
+        "eyes",
+        "chin",
+        "shin",
+      ];
       this.combatText = `${this.name} ${
         attacks[Math.floor(Math.random() * attacks.length)]
       } ${this.opponentName} in the ${
         places[Math.floor(Math.random() * places.length)]
       }...`;
-      await this.sleep();
+      await this.writeCombatText();
       let acc = Math.random();
       let def = Math.random();
       let crit = Math.random();
       if (acc > this.stats.ACC / 100) {
         this.combatText = `${this.name} misses his attack. Vandró...`;
-        return;
-      }
-      if (def <= this.opponentStats.DEF / 100) {
+      } else if (def <= this.opponentStats.DEF / 100) {
         this.combatText = `${this.opponentName} blocks the attack from ${this.name}. Tekinn lúser...`;
-        return;
-      }
-      if (crit <= this.opponentStats.CRIT / 100) {
+      } else if (crit <= this.opponentStats.CRIT / 100) {
         this.combatText = `${this.name} attacks ${
           this.opponentName
         } WITH A CRITICAL HIT, dealing ${this.stats.ATK * 2} points of damage.`;
@@ -420,31 +463,34 @@ export default {
         this.combatText = `${this.name} delivers a devastating blow to ${this.opponentName}, inflicting ${this.stats.ATK} points of damage.`;
         this.opponentHP -= this.stats.ATK;
       }
+      await this.writeCombatText();
 
-      await this.sleep(2000);
       if (this.opponentHP <= 0) {
         this.finished = true;
         this.combatText = `${this.name} has defeated ${this.opponentName} in glorious combat!!`;
+        await this.writeCombatText();
         return;
       }
       this.combatText = `It's ${this.opponentName} (AI)'s turn.`;
-      await this.sleep(3000);
+      await this.writeCombatText();
 
       this.combatText = `${this.opponentName} ${
         attacks[Math.floor(Math.random() * attacks.length)]
       } ${this.name} in the ${
         places[Math.floor(Math.random() * places.length)]
       }...`;
-      await this.sleep();
+      await this.writeCombatText();
       acc = Math.random();
       def = Math.random();
       crit = Math.random();
       if (acc > this.opponentStats.ACC / 100) {
         this.combatText = `${this.opponentName} misses his attack. Vandró...`;
+        await this.writeCombatText();
         return;
       }
       if (def <= this.stats.DEF / 100) {
         this.combatText = `${this.name} blocks the attack from ${this.opponentName}. Tekinn lúser...`;
+        await this.writeCombatText();
         return;
       }
       if (crit <= this.stats.CRIT / 100) {
@@ -458,10 +504,11 @@ export default {
         this.combatText = `${this.opponentName} delivers a devastating blow to ${this.name}, inflicting ${this.opponentStats.ATK} points of damage.`;
         this.HP -= this.opponentStats.ATK;
       }
+      await this.writeCombatText();
       if (this.HP <= 0) {
-        await this.sleep();
         this.finished = true;
         this.combatText = `${this.opponentName} has defeated ${this.name} in glorious combat!!`;
+        await this.writeCombatText();
         return;
       }
     },
@@ -485,6 +532,7 @@ export default {
       this.opponentBase = Math.floor(Math.random() * this.characters.length);
       this.opponentAugu = Math.floor(Math.random() * this.characters.length);
       this.opponentMunnur = Math.floor(Math.random() * this.characters.length);
+      this.$emit("toggling", true);
       await this.fetchData();
     },
     splitString(string) {
@@ -507,25 +555,28 @@ export default {
     height: 95vh !important;
   }
 }
-.combat-text {
-  position: absolute;
-  bottom: 65px;
-  width: 70%;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  font-size: 20px;
-  @include media-breakpoint-down(sm) {
-    & {
-      bottom: 100px;
+
+.footer-container {
+  padding-bottom: 80px;
+  &__combat {
+    width: 70%;
+    margin-top: -70px;
+    @include media-breakpoint-down(sm) {
+      & {
+        margin-top: -150px;
+        width: 100%;
+        margin-left: 0;
+      }
     }
+    margin-left: 30px;
+    text-align: center;
+    font-size: 20px;
   }
 }
 
 .character-creation {
   &__container {
+    padding-top: 40px;
     height: 550px;
     min-width: 90%;
     padding-bottom: 40px;
@@ -533,18 +584,19 @@ export default {
 }
 
 .fight-container {
-  height: 750px;
+  height: 100%;
   min-width: 90%;
 }
 
 .tooltip {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  font-style: italic;
   &__tip {
     background: #f79824;
+    z-index: 10;
     padding: 10px;
+    width: 75%;
+    margin-left: -120px;
+    margin-top: -20px;
+    font-style: normal;
   }
   @include media-breakpoint-down(sm) {
     & {
@@ -566,12 +618,9 @@ export default {
   }
 }
 
-.front {
-  z-index: 100;
-}
-
 .fighter {
   width: 50%;
+  height: 75%;
   @include media-breakpoint-down(sm) {
     & {
       width: 100%;
@@ -582,7 +631,7 @@ export default {
     display: flex;
     justify-content: space-around;
     position: relative;
-    height: 100%;
+    height: 90%;
     width: 100%;
   }
   &__face {
@@ -656,16 +705,33 @@ export default {
   align-items: flex-start;
   position: relative;
   height: 90%;
+  margin-top: -30px;
 
   &__button {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-
+    background-color: rgba(#00ff00, 0.7);
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 15px;
     &--random {
-      position: absolute;
-      left: 20px;
-      bottom: 20px;
+      background-color: rgba(#ff0000, 0.6);
+    }
+    &--stop {
+      background-color: #242424;
+      color: white;
+      font-size: 18px;
+      border-radius: 35px;
+      border: none;
+      @include media-breakpoint-down(sm) {
+        & {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 40px;
+          padding: 10px;
+        }
+      }
     }
   }
 
@@ -680,7 +746,10 @@ export default {
     flex-direction: column;
     justify-content: center;
     height: 100%;
+    padding: 8px;
     svg {
+      fill: #242424;
+      stroke: white;
       margin-bottom: 100px;
     }
   }
