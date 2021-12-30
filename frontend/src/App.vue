@@ -144,6 +144,14 @@ body {
   overflow: hidden;
 }
 @import "~@/assets/scss/vendors/bootstrap-vue/index";
+.lorge {
+  font-size: 80px;
+  @include media-breakpoint-down(sm) {
+    & {
+      font-size: 60px;
+    }
+  }
+}
 .app-container {
   display: flex;
   justify-content: center;

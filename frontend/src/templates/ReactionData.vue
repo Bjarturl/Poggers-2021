@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-center">Reactions!</h1>
+    <h1 class="text-center lorge">Reactions!</h1>
     <data-container
       :data-function="dataFunction"
       :data-components="dataComponents"

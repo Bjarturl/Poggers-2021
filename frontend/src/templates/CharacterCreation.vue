@@ -201,7 +201,7 @@
       <div class="footer-container__combat w-100">
         <span>{{ combatText }}</span>
       </div>
-      <div class="w-50 text-left">
+      <div class="w-50 text-right">
         <span class="font-italic"
           >Stats
           <span class="ml-1">
@@ -609,6 +609,7 @@ export default {
 .vs {
   height: 100px;
   width: 150px;
+  object-fit: contain;
   margin-top: 60px;
   @include media-breakpoint-down(sm) {
     & {
@@ -646,13 +647,16 @@ export default {
     font-weight: bold;
     &--name {
       font-weight: normal;
-      font-size: 20px;
+      font-size: 24px;
+      margin-bottom: 12px;
+      margin-top: 4px;
+      line-height: 20px;
+      color: rgba(red, 0.5);
     }
     position: absolute;
-    left: 70px;
+    left: 5px;
     @include media-breakpoint-down(sm) {
       & {
-        left: 10px;
         width: 100%;
       }
     }
@@ -679,12 +683,8 @@ export default {
     .fighter__stats {
       position: absolute;
       left: auto;
-      right: 70px;
-      @include media-breakpoint-down(sm) {
-        & {
-          right: 10px;
-        }
-      }
+      right: 5px;
+      text-align: right;
     }
     .face {
       &__part {
