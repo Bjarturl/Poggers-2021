@@ -134,7 +134,7 @@ export default {
     font-size: 18px;
     border-radius: 35px;
     border: none;
-    width: 100px;
+    width: 120px;
     appearance: none;
     text-align: center;
     &:focus {

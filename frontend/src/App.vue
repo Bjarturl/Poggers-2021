@@ -96,7 +96,7 @@ export default {
       this.$store.names = data.names;
       setTimeout(() => {
         this.fetching = false;
-      }, 3000);
+      }, 1500);
     },
 
     clearButtonPage() {

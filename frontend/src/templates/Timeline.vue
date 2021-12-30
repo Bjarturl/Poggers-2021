@@ -51,7 +51,7 @@ export default {
     );
     setTimeout(() => {
       this.fetching = false;
-    }, 2000);
+    }, 1500);
   },
 
   data() {
