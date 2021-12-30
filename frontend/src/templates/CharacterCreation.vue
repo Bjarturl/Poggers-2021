@@ -567,7 +567,7 @@ export default {
         margin-left: 0;
       }
     }
-    margin-left: 30px;
+    margin-left: 100px;
     text-align: center;
     font-size: 20px;
   }
