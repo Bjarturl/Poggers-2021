@@ -83,6 +83,11 @@ export default {
   background-image: url("./assets/poggers_himself.jpg");
   background-size: 200px 200px;
   height: 100vh;
+  @include media-breakpoint-down(sm) {
+    & {
+      padding-bottom: 60px;
+    }
+  }
 }
 
 .main-container {
