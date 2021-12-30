@@ -72,13 +72,17 @@ export default {
 .loading {
   display: flex;
   padding: 30px;
-
+  @include media-breakpoint-down(sm) {
+    & {
+      flex-direction: column;
+    }
+  }
   &__container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-items: center;
     animation: BlinkingBackground 1s linear infinite;
-    width: max-content;
     border-radius: 4px;
     span {
       padding-bottom: 10px;

@@ -30,16 +30,16 @@ export default {
 .year-selector {
   width: max-content;
   margin-top: -3px;
-
   &__container {
     display: flex;
     align-items: center;
     border: 3px solid black;
     background-color: $gray-400;
-    padding: 5px;
+    padding: 4px;
   }
   select {
     background-color: $gray-400;
+    font-size: 18px;
   }
 }
 </style>

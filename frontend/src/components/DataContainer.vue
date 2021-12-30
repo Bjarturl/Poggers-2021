@@ -43,7 +43,6 @@ export default {
       required: true,
     },
     colWidth: {
-      type: Number,
       default: 6,
     },
   },
@@ -87,7 +86,9 @@ export default {
 
     getLabelsForKey(key) {
       const dataObj = this.getPlots(key);
-      return dataObj.labels;
+      return dataObj.labels.map((l) =>
+        typeof l === "string" ? l.split(" ")[0] : l
+      );
     },
 
     getLinesForKey(key) {

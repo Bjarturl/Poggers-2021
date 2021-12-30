@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 class="text-center">Hver var virkastur?</h1>
     <data-container
       :data-function="dataFunction"
       :data-components="dataComponents"

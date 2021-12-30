@@ -1,6 +1,7 @@
 <template>
   <Loading v-if="fetching" />
   <b-container class="character-creation__container" v-else-if="!fighting">
+    <h1 class="text-center">{{ name }}</h1>
     <b-row class="character">
       <div class="character__selection">
         <b-iconstack
@@ -78,13 +79,19 @@
         </b-iconstack>
       </div>
     </b-row>
-    <span class="character__name">{{ name }}</span>
-    <button class="btn btn-danger character__button" @click="startFight">
+    <button class="btn btn-info character__button--random" @click="randomize">
+      Random
+    </button>
+    <button class="btn btn-success character__button" @click="startFight">
       Smelltu hér til að berjast!
     </button>
   </b-container>
   <!-- FIGHTING -->
-  <b-container v-else class="fight-container">
+  <b-container
+    v-else
+    class="fight-container"
+    @click="$root.$emit('bv::hide::tooltip')"
+  >
     <div class="fighter__container">
       <div class="fighter">
         <div class="fighter__face">
@@ -108,7 +115,7 @@
             :max="stats.HP"
             :value="HP < 0 ? 0 : HP"
             height="2rem"
-            class="w-75 text-center"
+            class="w-75 text-center front"
             variant="success"
             animated
             show-value
@@ -119,7 +126,7 @@
           <span class="fighter__stats--name">{{ name }}</span>
           <span>ATK: {{ stats.ATK }}</span>
           <span>DEF: {{ stats.DEF }}%</span>
-          <span>HP: {{ stats.HP }}</span>
+          <span>MAX HP: {{ stats.HP }}</span>
           <span>CRIT: {{ stats.CRIT }}%</span>
           <span>ACC: {{ stats.ACC }}%</span>
           <button
@@ -162,7 +169,7 @@
             :max="opponentStats.HP"
             :value="opponentHP < 0 ? 0 : opponentHP"
             height="2rem"
-            class="w-75 text-center"
+            class="w-75 text-center front"
             variant="success"
             animated
             show-value
@@ -173,7 +180,7 @@
           <span class="fighter__stats--name">{{ opponentName }} (AI)</span>
           <span>ATK: {{ opponentStats.ATK }}</span>
           <span>DEF: {{ opponentStats.DEF }}%</span>
-          <span>HP: {{ opponentStats.HP }}</span>
+          <span>MAX HP: {{ opponentStats.HP }}</span>
           <span>CRIT: {{ opponentStats.CRIT }}%</span>
           <span>ACC: {{ opponentStats.ACC }}%</span>
         </div>
@@ -183,9 +190,35 @@
       <span>{{ combatText }}</span>
     </div>
     <div>
-      <span class="tooltip">Stats eru reiknuð út frá þáttöku í spjallinu</span>
+      <span class="tooltip"
+        >Stats eru reiknuð út frá þáttöku í spjallinu
+        <span>
+          <b-icon
+            id="question-tooltip"
+            icon="question-circle"
+            style="width: 15px; height: 15px"
+          ></b-icon>
+          <b-tooltip target="question-tooltip" triggers="hover click">
+            <div class="tooltip__tip d-flex flex-column">
+              <span><strong>ATK: </strong>Fjöldi sendra skilaboða</span>
+              <span><strong>DEF: </strong> Fjöldi sendra mynda</span>
+              <span><strong>MAX HP: </strong> Fjöldi reactions fengin</span>
+              <span
+                ><strong>CRIT: </strong> Fjöldi reactions sem manneskja gaf
+                (fleiri = minna crit)</span
+              >
+              <span
+                ><strong>ACC: </strong>Lengsta skilaboð sent (styttra = betra
+                accuracy)
+              </span>
+              <span>ATH. stats breytast eftir því hvaða ár er valið</span>
+            </div>
+          </b-tooltip>
+        </span>
+      </span>
       <button
         class="btn btn-danger character__button"
+        v-if="!attacking"
         @click="fighting = false"
       >
         Til baka
@@ -458,13 +491,22 @@ export default {
       const regex = RegExp(".{1," + Math.ceil(string.length / 3) + "}", "g");
       return string.match(regex);
     },
+    randomize() {
+      this.base = Math.floor(Math.random() * this.characters.length);
+      this.augu = Math.floor(Math.random() * this.characters.length);
+      this.munnur = Math.floor(Math.random() * this.characters.length);
+    },
   },
 };
 </script>
 
 <style lang="scss">
 @import "~@/assets/scss/vendors/bootstrap-vue/index";
-
+@include media-breakpoint-down(sm) {
+  .main-container {
+    height: 95vh !important;
+  }
+}
 .combat-text {
   position: absolute;
   bottom: 65px;
@@ -475,12 +517,18 @@ export default {
   margin-right: auto;
   text-align: center;
   font-size: 20px;
+  @include media-breakpoint-down(sm) {
+    & {
+      bottom: 100px;
+    }
+  }
 }
 
 .character-creation {
   &__container {
     height: 550px;
     min-width: 90%;
+    padding-bottom: 40px;
   }
 }
 
@@ -494,16 +542,41 @@ export default {
   bottom: 10px;
   left: 10px;
   font-style: italic;
+  &__tip {
+    background: #f79824;
+    padding: 10px;
+  }
+  @include media-breakpoint-down(sm) {
+    & {
+      width: 50%;
+    }
+  }
 }
 
 .vs {
   height: 100px;
   width: 150px;
   margin-top: 60px;
+  @include media-breakpoint-down(sm) {
+    & {
+      width: 100px;
+      height: 100px;
+      margin-left: 20px;
+    }
+  }
+}
+
+.front {
+  z-index: 100;
 }
 
 .fighter {
   width: 50%;
+  @include media-breakpoint-down(sm) {
+    & {
+      width: 100%;
+    }
+  }
   position: relative;
   &__container {
     display: flex;
@@ -527,6 +600,12 @@ export default {
     }
     position: absolute;
     left: 70px;
+    @include media-breakpoint-down(sm) {
+      & {
+        left: 10px;
+        width: 100%;
+      }
+    }
     right: auto;
   }
   .face {
@@ -537,6 +616,13 @@ export default {
       left: 0;
       right: auto;
       top: 5px;
+      @include media-breakpoint-down(sm) {
+        & {
+          width: 150px;
+          height: 200px;
+          left: -30px;
+        }
+      }
     }
   }
   &__computer {
@@ -544,11 +630,21 @@ export default {
       position: absolute;
       left: auto;
       right: 70px;
+      @include media-breakpoint-down(sm) {
+        & {
+          right: 10px;
+        }
+      }
     }
     .face {
       &__part {
         left: auto;
         right: 0;
+        @include media-breakpoint-down(sm) {
+          & {
+            right: -50px;
+          }
+        }
       }
     }
   }
@@ -565,6 +661,12 @@ export default {
     position: absolute;
     right: 20px;
     bottom: 20px;
+
+    &--random {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+    }
   }
 
   &__name {

@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
-    <Loading v-if="fetching" />
+    <div class="main-container" v-if="fetching">
+      <Loading />
+    </div>
     <div v-else class="main-container">
       <b-container class="page-container">
         <component :is="pages[currPage]" />
@@ -35,11 +37,11 @@ export default {
     return {
       fetching: false,
       pages: [
-        CharacterCreation,
         Timeline,
         ReactionData,
         MostPopularData,
         DataOverTime,
+        CharacterCreation,
       ],
       currPage: this.$store.currPage,
     };
@@ -55,9 +57,9 @@ export default {
       const data = await GET.allData();
       this.$store.years = data.years;
       this.$store.names = data.names;
-      // setTimeout(() => {
-      this.fetching = false;
-      // }, 5000);
+      setTimeout(() => {
+        this.fetching = false;
+      }, 5000);
     },
     updatePage(page) {
       this.$store.currPage = page;
@@ -100,11 +102,18 @@ export default {
   background-color: $gray-400;
   min-height: 80%;
   width: 90%;
+
   min-width: 90%;
   padding: 40px;
   border: 3px solid $black;
   position: relative;
   overflow: scroll;
+  @include media-breakpoint-down(sm) {
+    & {
+      width: 100%;
+      padding: 5px;
+    }
+  }
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
