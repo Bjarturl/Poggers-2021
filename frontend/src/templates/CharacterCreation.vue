@@ -284,6 +284,7 @@ export default {
     const chars = [
       "Ægir",
       "Bjartur",
+      "Arnfinnur",
       "Ásgrímur",
       "Einar",
       "Eyvindur",
