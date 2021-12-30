@@ -127,11 +127,26 @@
         </div>
         <div class="fighter__stats">
           <span class="fighter__stats--name">{{ name }}</span>
-          <span>ATK: {{ stats.ATK }}</span>
-          <span>DEF: {{ stats.DEF }}%</span>
-          <span>MAX HP: {{ stats.HP }}</span>
-          <span>CRIT: {{ stats.CRIT }}%</span>
-          <span>ACC: {{ stats.ACC }}%</span>
+          <div class="d-flex">
+            <div class="d-flex flex-column mr-3">
+              <span class="text-label">ATK </span>
+              <span class="text-label">DEF </span>
+              <span class="text-label">HP </span>
+              <span class="text-label">CRIT </span>
+              <span class="text-label">ACC</span>
+            </div>
+            <div class="d-flex flex-column">
+              <span>{{ stats.ATK }}</span>
+
+              <span>{{ stats.DEF }}%</span>
+
+              <span>{{ stats.HP }}</span>
+
+              <span>{{ stats.CRIT }}%</span>
+
+              <span>{{ stats.ACC }}% </span>
+            </div>
+          </div>
           <button
             class="character__button character__button--random mt-4"
             v-if="!attacking && !finished"
@@ -181,11 +196,26 @@
         </div>
         <div class="fighter__stats">
           <span class="fighter__stats--name">{{ opponentName }} (AI)</span>
-          <span>ATK: {{ opponentStats.ATK }}</span>
-          <span>DEF: {{ opponentStats.DEF }}%</span>
-          <span>MAX HP: {{ opponentStats.HP }}</span>
-          <span>CRIT: {{ opponentStats.CRIT }}%</span>
-          <span>ACC: {{ opponentStats.ACC }}%</span>
+          <div class="d-flex text-right justify-content-end">
+            <div class="d-flex flex-column">
+              <span>{{ opponentStats.ATK }}</span>
+
+              <span>{{ opponentStats.DEF }}%</span>
+
+              <span>{{ opponentStats.HP }}</span>
+
+              <span>{{ opponentStats.CRIT }}%</span>
+
+              <span>{{ opponentStats.ACC }}% </span>
+            </div>
+            <div class="d-flex flex-column ml-3">
+              <span class="text-label">ATK </span>
+              <span class="text-label">DEF </span>
+              <span class="text-label">HP </span>
+              <span class="text-label">CRIT </span>
+              <span class="text-label">ACC</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -581,7 +611,10 @@ export default {
     padding-bottom: 40px;
   }
 }
-
+.text-label {
+  color: crimson;
+  text-decoration: underline;
+}
 .fight-container {
   height: 100%;
   min-width: 90%;
@@ -684,7 +717,6 @@ export default {
       position: absolute;
       left: auto;
       right: 5px;
-      text-align: right;
     }
     .face {
       &__part {
