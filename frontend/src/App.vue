@@ -142,6 +142,7 @@ export default {
 body {
   font-family: "Roboto black";
   overflow: hidden;
+  background-color: lightslategray;
 }
 @import "~@/assets/scss/vendors/bootstrap-vue/index";
 .lorge {
@@ -156,7 +157,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-size: 200px 200px;
   z-index: 2;
   height: 100vh;
   @include media-breakpoint-down(sm) {
