@@ -627,9 +627,11 @@ export default {
 .combat-text {
   position: absolute;
   bottom: 100px;
+  font-size: 24px;
   @include media-breakpoint-down(sm) {
     & {
-      bottom: 200px;
+      bottom: 150px;
+      font-size: 20px;
     }
   }
   left: 0;
