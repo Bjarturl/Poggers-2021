@@ -3,7 +3,6 @@
     class="w-100 d-flex flex-column align-items-center justify-content-center"
     style="height: 85%"
   >
-    <h1 class="mb-5 text-center lorge">POGGERS 2021</h1>
     <iframe
       class="w-100 h-100"
       src="https://www.youtube.com/embed/CDcHtwbFzk0"
