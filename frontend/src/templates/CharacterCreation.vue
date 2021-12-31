@@ -630,7 +630,7 @@ export default {
   font-size: 24px;
   @include media-breakpoint-down(sm) {
     & {
-      bottom: 150px;
+      bottom: 80px;
       font-size: 20px;
     }
   }
