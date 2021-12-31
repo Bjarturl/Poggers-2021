@@ -43,7 +43,7 @@ export default {
       return this.btnPage || this.currPage > 0;
     },
     canGoNext() {
-      return !this.btnPage || this.currPage < this.pages - 1;
+      return !this.btnPage && this.currPage < this.pages - 1;
     },
   },
 
@@ -96,7 +96,7 @@ export default {
   padding: 5px;
   align-items: center;
   justify-content: space-between;
-
+  font-size: 18px;
   &__button {
     color: white;
     background-color: #242424;
@@ -105,7 +105,7 @@ export default {
     width: 200px;
     height: 35px;
     &--disabled {
-      opacity: 0.7;
+      opacity: 0;
     }
   }
 

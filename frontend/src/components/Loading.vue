@@ -1,5 +1,5 @@
 <template>
-  <div class="loading__container pb-5">
+  <div class="loading__container">
     <div class="loading">
       <div class="loading__character loading__character__ingvar">
         <div class="loading__fists loading__character__ingvar--fists">
@@ -84,6 +84,12 @@ export default {
     justify-items: center;
     animation: BlinkingBackground 1s linear infinite;
     border-radius: 4px;
+    padding-bottom: 20px;
+    @include media-breakpoint-down(sm) {
+      & {
+        padding-bottom: 60px;
+      }
+    }
     span {
       padding-bottom: 10px;
       font-size: 32px;

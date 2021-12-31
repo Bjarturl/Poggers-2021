@@ -219,18 +219,18 @@
         </div>
       </div>
     </div>
+    <div class="w-100 combat-text">
+      <span>{{ combatText }}</span>
+    </div>
     <div class="w-100 d-flex justify-content-between footer-container">
       <button
-        class="character__button--stop w-25"
+        class="character__button--stop"
         :disabled="attacking"
         @click="stopFight"
       >
-        <b-icon icon="arrow-left" style="width: 15px; height: 15px"></b-icon>
-        Hætta
+        Til baka
       </button>
-      <div class="footer-container__combat w-100">
-        <span>{{ combatText }}</span>
-      </div>
+      <div class="footer-container__combat w-100"></div>
       <div class="w-50 text-right">
         <span class="font-italic"
           >Stats
@@ -621,6 +621,22 @@ export default {
   min-width: 90%;
   font-family: "Fredoka one";
   font-size: 16px;
+  position: relative;
+}
+
+.combat-text {
+  position: absolute;
+  bottom: 100px;
+  @include media-breakpoint-down(sm) {
+    & {
+      bottom: 200px;
+    }
+  }
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .tooltip {
@@ -752,20 +768,13 @@ export default {
       background-color: rgba(#ff0000, 0.6);
     }
     &--stop {
-      background-color: #242424;
       color: white;
-      font-size: 18px;
-      border-radius: 35px;
+      background-color: #242424;
       border: none;
-      @include media-breakpoint-down(sm) {
-        & {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 40px;
-          padding: 10px;
-        }
-      }
+      border-radius: 35px;
+      width: 400px;
+      font-family: "Roboto black";
+      height: 35px;
     }
   }
 

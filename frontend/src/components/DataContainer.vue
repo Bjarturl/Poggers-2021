@@ -1,5 +1,5 @@
 <template>
-  <b-container class="data pb-4">
+  <b-container class="data">
     <b-row v-if="!fetching && data">
       <b-col
         class="data__item"
@@ -110,6 +110,12 @@ export default {
   width: 100%;
   overflow: hidden;
   text-align: center;
+  padding-bottom: 20px;
+  @include media-breakpoint-down(sm) {
+    & {
+      padding-bottom: 40px;
+    }
+  }
   &__item {
     @include media-breakpoint-down(sm) {
       & {
