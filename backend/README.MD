@@ -35,4 +35,3 @@ If you want to query for all years, simply put "all" in the year parameter.
 
 ## Pushing to Heroku
 - git subtree push --prefix backend heroku main
-Then the api will be available at https://poggers2021api.herokuapp.com/
