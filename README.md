@@ -10,7 +10,8 @@
 ### Messages by time of day
 ![](https://i.gyazo.com/59bd6a071e51fd2e08bce70cf2863308.png)
 ### Character creation
-Each group member's face is split in 3 parts and the user can create a custom combination
+Each group member's face is split in 3 parts and the user can create a custom combination.
+Here we have a combination of Bjartur+Kristófer+Einar.
 ![](https://i.gyazo.com/52079b4fb9bfeacfd18d303dae54bd42.png)
 ### FIGHT!
 Turn based combat system against an AI
