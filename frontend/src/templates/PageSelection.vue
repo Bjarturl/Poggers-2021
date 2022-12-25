@@ -1,6 +1,6 @@
 <template>
   <b-container class="w-100 h-75 d-flex flex-column align-items-center pb-4">
-    <h1 class="text-center lorge">POGGERS 2021</h1>
+    <h1 class="text-center lorge">POGGERS 2022</h1>
     <b-row class="w-100 pb-5">
       <b-col
         class="selection-button"

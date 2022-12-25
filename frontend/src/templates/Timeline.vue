@@ -1,6 +1,6 @@
 <template>
   <b-container class="w-100 h-75 timeline" v-if="!fetching">
-    <h1 class="text-center lorge">POGGERS 2021</h1>
+    <h1 class="text-center lorge">POGGERS 2022</h1>
     <div class="pyro h-100" v-if="!fetching">
       <div class="before"></div>
       <div

@@ -1,19 +1,23 @@
-import mysql.connector 
+import psycopg2
 import datetime
 import json
 import re
 from functools import partial
 
+
 def connect_to_database():
     server = "localhost"
-    database = "messenger"
-    username = "root"
-    cnxn = mysql.connector.connect(
+    database = "poggers"
+    username = "postgres"
+    cnxn = psycopg2.connect(
         user=username,
+        password="root",
         host=server,
-        database=database
+        database=database,
+        port="5432"
     )
     return cnxn
+
 
 def get_stop_words():
     f = open("data/stop_words.txt", "r", encoding="utf-8")
@@ -26,9 +30,8 @@ def get_min_year(chat_id):
     db = connect_to_database()
     c = db.cursor()
     c.execute(f"""
-        SELECT YEAR(MIN(timestamp))
+        SELECT min(extract(year from timestamp))
         FROM messenger_message
-        WHERE chat_identifier_id = '{chat_id}' 
     """)
     try:
         year = c.fetchone()[0]
@@ -36,8 +39,10 @@ def get_min_year(chat_id):
     except:
         return 2000
 
+
 def get_curr_year():
     return datetime.datetime.now().year
+
 
 def get_senders(min_date, max_date, chat_id, db):
     c = db.cursor()
@@ -46,7 +51,6 @@ def get_senders(min_date, max_date, chat_id, db):
         FROM messenger_message
         WHERE timestamp >= '{min_date}' 
         AND timestamp <= '{max_date}'
-        AND chat_identifier_id = '{chat_id}'
         ORDER BY sender asc
     """)
     senders = [i[0] for i in c.fetchall()]
@@ -61,7 +65,7 @@ def get_id_from_name(name):
         SELECT distinct id
         FROM messenger_chatidentifier
         WHERE chat_name like '%{name}%'
-    """) 
+    """)
     chat_id = c.fetchone()
     if chat_id:
         return chat_id[0]
