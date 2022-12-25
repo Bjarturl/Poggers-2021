@@ -31,7 +31,6 @@ class DataParser:
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}'
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
         """)
         with open(f"{self.save_path}/heildarfjöldi_skilaboða.csv", "w+", encoding="utf-8") as f:
             f.write("Heildarfjöldi skilaboða\n")
@@ -45,8 +44,7 @@ class DataParser:
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}'
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
-            AND is_photo = 1
+            AND is_photo = true
         """)
         with open(f"{self.save_path}/heildarfjöldi_mynda.csv", "w+", encoding="utf-8") as f:
             f.write("Heildarfjöldi mynda\n")
@@ -63,8 +61,7 @@ class DataParser:
             where R.timestamp >= '{self.min_date}'
             AND R.timestamp <= '{self.max_date}' 
             AND S.name <> ''
-            AND M.chat_identifier_id = '{self.chat_id}'
-            GROUP BY S.name
+            GROUP BY S.name, R.reaction
             ORDER BY S.name, no_occurences DESC
         """)
         with open(f"{self.save_path}/reactions_per_einstaklingur.csv", "w+", encoding="utf-8") as f:
@@ -114,12 +111,11 @@ class DataParser:
 
     def fékk_flest_reactions(self):
         self.cursor.execute(f"""
-        SELECT COUNT(*) as 'Count of reaction', S.name as sender
+        SELECT COUNT(*) as "Count of reaction", S.name as sender
             from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
             join messenger_sender S on S.id = R.sender_id
             where R.timestamp >= '{self.min_date}' 
             AND R.timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             and S.name <> ''
             GROUP BY sender
             ORDER BY COUNT(*) DESC
@@ -133,13 +129,12 @@ class DataParser:
 
     def fjöldi_skilaboða_eftir_degi(self):
         self.cursor.execute(f"""
-            SELECT COUNT(*) as Skilaboð, DAY(timestamp) as Day
+            SELECT COUNT(*) as Skilaboð, extract(day from timestamp) as Day
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
-            GROUP BY day(timestamp)
-            ORDER BY day(timestamp) 
+            GROUP BY extract(day from timestamp)
+            ORDER BY extract(day from timestamp) 
         """)
         with open(f"{self.save_path}/fjöldi_skilaboða_eftir_degi.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Dagur\n")
@@ -149,13 +144,13 @@ class DataParser:
 
     def fjöldi_skilaboða_eftir_mánuðum(self):
         self.cursor.execute(f"""
-            SELECT COUNT(*) as Skilaboð, MONTHNAME(timestamp) as Month
+            SELECT COUNT(*) as Skilaboð, 
+            TO_CHAR(timestamp, 'month') AS "Month"
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
-            GROUP BY MONTH(timestamp)
-            ORDER BY Month(timestamp)
+            GROUP BY TO_CHAR(timestamp, 'month')
+            ORDER BY TO_CHAR(timestamp, 'month')
         """)
         with open(f"{self.save_path}/fjöldi_skilaboða_eftir_mánuðum.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Mánuður\n")
@@ -169,7 +164,6 @@ class DataParser:
             FROM messenger_message
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             GROUP BY hour
             ORDER BY hour
         """)
@@ -181,11 +175,10 @@ class DataParser:
 
     def flest_skilaboð_send(self):
         self.cursor.execute(f"""
-        SELECT COUNT(*) as 'Count of message', S.name
+        SELECT COUNT(*) as "Count of message", S.name
             from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             GROUP BY s.NAME
             ORDER BY COUNT(*) DESC
             LIMIT 5
@@ -198,12 +191,11 @@ class DataParser:
 
     def flestar_myndir_sendar(self):
         self.cursor.execute(f"""
-        SELECT COUNT(*) as 'Count of message', S.name
+        SELECT COUNT(*) as "Count of message", S.name
             from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
-            AND M.is_photo = 1
+            AND M.is_photo = true
             GROUP BY S.NAME
             ORDER BY COUNT(*) DESC
             LIMIT 5
@@ -216,11 +208,10 @@ class DataParser:
 
     def lengstu_skilaboðin(self):
         self.cursor.execute(f"""
-            SELECT msg_len as 'Message length', S.name
+            SELECT msg_len as "Message length", S.name
             FROM messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             ORDER BY msg_len DESC
             LIMIT 5
         """)
@@ -232,13 +223,14 @@ class DataParser:
 
     def meðallengd_skilaboða(self):
         self.cursor.execute(f"""
-        SELECT truncate(avg(cast(msg_len as float)), 2) as 'Average of msg_len', S.name 
+   
+               SELECT substring(cast(avg(cast(msg_len as float)) as varchar), 0, 4) as "Average of msg_len", S.name 
             FROM messenger_message M join messenger_sender S on M.sender_id = S.id
-            WHERE timestamp >= '{self.min_date}' 
+                   WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
+      
             GROUP BY S.name
-            ORDER BY  truncate(avg(cast(msg_len as float)), 2) DESC
+ORDER BY  avg(cast(msg_len as float)) DESC
             LIMIT 5
         """)
         with open(f"{self.save_path}/meðallengd_skilaboða_í_orðum.csv", "w+", encoding="utf-8") as f:
@@ -254,7 +246,6 @@ class DataParser:
             where message like '%named the group%'
             AND timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             ORDER BY timestamp 
         """)
         with open(f"{self.save_path}/nafnið.csv", "w+", encoding="utf-8") as f:
@@ -266,13 +257,12 @@ class DataParser:
 
     def reactaði_oftast(self):
         self.cursor.execute(f"""
-            SELECT  COUNT(*) as 'Count of reaction', S.name
+            SELECT  COUNT(*) as "Count of reaction", S.name
             from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
             join messenger_sender S ON M.sender_id = S.id
             where S.name <> ''
             AND R.timestamp >= '{self.min_date}' 
             AND R.timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             GROUP BY S.name
             ORDER BY COUNT(*) DESC
             LIMIT 5
@@ -285,11 +275,10 @@ class DataParser:
 
     def get_stats(self):
         self.cursor.execute(f"""
-            SELECT S.name, round(count(*) / 100, 0) as 'ATK', (2500 - MAX(msg_len)) / 2500 as 'ACC'
+            SELECT S.name, round(count(*) / 100, 0) as "ATK", (2500 - MAX(msg_len)) / 2500 as "ACC"
             from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             GROUP BY s.NAME
         """)
         names = {}
@@ -301,12 +290,11 @@ class DataParser:
             names[name]['ACC'] = float(line[2])
 
         self.cursor.execute(f"""
-            SELECT S.name as sender, round(count(*) / 10, 0) as 'HP'
+            SELECT S.name as sender, round(count(*) / 10, 0) as "HP"
             from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
             join messenger_sender S on S.id = R.sender_id
             where R.timestamp >= '{self.min_date}' 
             AND R.timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             and S.name <> ''
             GROUP BY sender
             ORDER BY COUNT(*) DESC
@@ -317,12 +305,11 @@ class DataParser:
                 names[name] = {}
             names[name]['HP'] = line[1]
         self.cursor.execute(f"""
-            SELECT S.name, (COUNT(*) / 20000) as 'CRIT'
+            SELECT S.name, (COUNT(*) / 20000) as "CRIT"
             from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
             join messenger_sender S ON M.sender_id = S.id
             where R.timestamp >= '{self.min_date}' 
             AND R.timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
             and S.name <> ''
             GROUP BY S.name
         """)
@@ -332,12 +319,11 @@ class DataParser:
                 names[name] = {}
             names[name]['CRIT'] = float(line[1])
         self.cursor.execute(f"""
-            SELECT S.name, round((8500 - COUNT(*)) / 8500 / 3, 2) as 'DEF'
+            SELECT S.name, round((8500 - COUNT(*)) / 8500 / 3, 2) as "DEF"
             from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}' 
             AND timestamp <= '{self.max_date}'
-            AND chat_identifier_id = '{self.chat_id}'
-            AND M.is_photo = 1
+            AND M.is_photo = true
             GROUP BY S.NAME
         """)
         for line in self.cursor.fetchall():
@@ -394,10 +380,10 @@ class DataParser:
         save_path_root = self.save_path
 
         self.set_dates(min_year, curr_year)
-        self.set_save_path(f'{save_path_root}/Frá byrjun')
         print(f"Years: {min_year} - {curr_year}")
-        self.create_all()
-        for i in range(min_year, curr_year+1):
+        # self.set_save_path(f'{save_path_root}/Frá byrjun')
+        # self.create_all()
+        for i in range(int(min_year), curr_year+1):
             print(f"Year: {i}")
             self.set_dates(i, i)
             self.set_save_path(f'{save_path_root}/{i}')
