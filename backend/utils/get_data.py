@@ -3,7 +3,7 @@ from data_parser import DataParser
 import os
 chat_id = 'boycott'
 dp = DataParser(
-    save_path=f"{os.getcwd()}\\data\\",
+    save_path=f"{os.getcwd()}/data/",
     chat_id=chat_id
 )
 dp.data_by_years()
