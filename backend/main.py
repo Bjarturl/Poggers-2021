@@ -26,9 +26,10 @@ def root():
 # Returns all available files and years for data_by_year_and_file
 @app.get("/data")
 def data():
+    print(os.listdir(f"{os.getcwd()}/data/2022"))
     return {
         "years": os.listdir(f"{os.getcwd()}/data"),
-        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/Frá byrjun")]
+        "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/2022")]
     }
 
 

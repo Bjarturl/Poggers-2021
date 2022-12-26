@@ -32,7 +32,7 @@ class DataParser:
             WHERE timestamp >= '{self.min_date}'
             AND timestamp <= '{self.max_date}'
         """)
-        with open(f"{self.save_path}/heildarfjöldi_skilaboða.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/heildarfjoldi_skilaboda.csv", "w+", encoding="utf-8") as f:
             f.write("Heildarfjöldi skilaboða\n")
             f.write(str(self.cursor.fetchone()[0]))
         f.close()
@@ -46,7 +46,7 @@ class DataParser:
             AND timestamp <= '{self.max_date}'
             AND is_photo = true
         """)
-        with open(f"{self.save_path}/heildarfjöldi_mynda.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/heildarfjoldi_mynda.csv", "w+", encoding="utf-8") as f:
             f.write("Heildarfjöldi mynda\n")
             f.write(str(self.cursor.fetchone()[0]))
         f.close()
@@ -140,7 +140,7 @@ class DataParser:
             ORDER BY COUNT(*) DESC
             LIMIT 5
         """)
-        with open(f"{self.save_path}/fékk_flest_reactions.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fekk_flest_reactions.csv", "w+", encoding="utf-8") as f:
             f.write("Count of reaction,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -155,7 +155,7 @@ class DataParser:
             GROUP BY extract(day from timestamp)
             ORDER BY extract(day from timestamp)
         """)
-        with open(f"{self.save_path}/fjöldi_skilaboða_eftir_degi.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fjoldi_skilaboda_eftir_degi.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Dagur\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -171,7 +171,7 @@ class DataParser:
             GROUP BY TO_CHAR(timestamp, 'month')
             ORDER BY TO_CHAR(timestamp, 'month')
         """)
-        with open(f"{self.save_path}/fjöldi_skilaboða_eftir_mánuðum.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fjoldi_skilaboda_eftir_manudum.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Mánuður\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -186,7 +186,7 @@ class DataParser:
             GROUP BY hour
             ORDER BY hour
         """)
-        with open(f"{self.save_path}/fjöldi_skilaboða_eftir_tíma_dags.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/fjoldi_skilaboda_eftir_tima_dags.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Klukkutími\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -202,7 +202,7 @@ class DataParser:
             ORDER BY COUNT(*) DESC
             LIMIT 5
         """)
-        with open(f"{self.save_path}/flest_skilaboð_send.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/flest_skilabod_send.csv", "w+", encoding="utf-8") as f:
             f.write("Count of message,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -234,7 +234,7 @@ class DataParser:
             ORDER BY msg_len DESC
             LIMIT 5
         """)
-        with open(f"{self.save_path}/lengstu_skilaboðin_í_orðum.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/lengstu_skilabodin_i_ordum.csv", "w+", encoding="utf-8") as f:
             f.write("Max of msg_len,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")
@@ -252,7 +252,7 @@ class DataParser:
 ORDER BY  avg(cast(msg_len as float)) DESC
             LIMIT 5
         """)
-        with open(f"{self.save_path}/meðallengd_skilaboða_í_orðum.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/medallengd_skilaboda_i_ordum.csv", "w+", encoding="utf-8") as f:
             f.write("Average of msg_len,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},\"{str(line[1]).replace('.', ',')}\"\n")
@@ -267,7 +267,7 @@ ORDER BY  avg(cast(msg_len as float)) DESC
             AND timestamp <= '{self.max_date}'
             ORDER BY timestamp
         """)
-        with open(f"{self.save_path}/nafnið.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/nafnid.csv", "w+", encoding="utf-8") as f:
             f.write("date,message\n")
             for line in self.cursor.fetchall():
                 n = line[1].replace('\"', '\'')
@@ -286,7 +286,7 @@ ORDER BY  avg(cast(msg_len as float)) DESC
             ORDER BY COUNT(*) DESC
             LIMIT 5
         """)
-        with open(f"{self.save_path}/reactaði_oftast.csv", "w+", encoding="utf-8") as f:
+        with open(f"{self.save_path}/reactadi_oftast.csv", "w+", encoding="utf-8") as f:
             f.write("Count of reaction,sender\n")
             for line in self.cursor.fetchall():
                 f.write(f"{line[0]},{line[1]}\n")

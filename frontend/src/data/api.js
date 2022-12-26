@@ -28,39 +28,39 @@ export const GET = {
 
   async messagesByTimeData(year) {
     const endpoints = [
-      "fjöldi_skilaboða_eftir_degi",
-      "fjöldi_skilaboða_eftir_mánuðum",
-      "fjöldi_skilaboða_eftir_tíma_dags",
+      "fjoldi_skilaboda_eftir_degi",
+      "fjoldi_skilaboda_eftir_manudum",
+      "fjoldi_skilaboda_eftir_tima_dags",
     ];
     return await fetchAllEndpoints(endpoints, year);
   },
 
   async mostPopularData(year) {
     const endpoints = [
-      "flest_skilaboð_send",
+      "flest_skilabod_send",
       "flestar_myndir_sendar",
-      "meðallengd_skilaboða_í_orðum",
-      "lengstu_skilaboðin_í_orðum",
+      "medallengd_skilaboda_i_ordum",
+      "lengstu_skilabodin_i_ordum",
     ];
     return await fetchAllEndpoints(endpoints, year);
   },
 
   async reactionData(year) {
     const endpoints = [
-      "fékk_flest_reactions",
-      "reactaði_oftast",
+      "fekk_flest_reactions",
+      "reactadi_oftast",
       "reactions_per_einstaklingur",
     ];
     return await fetchAllEndpoints(endpoints, year);
   },
 
   async nameData(year) {
-    const endpoints = ["nafnið"];
+    const endpoints = ["nafnid"];
     return await fetchAllEndpoints(endpoints, year);
   },
 
   async allTimeData(year) {
-    const endpoints = ["heildarfjöldi_mynda", "heildarfjöldi_skilaboða"];
+    const endpoints = ["heildarfjoldi_mynda", "heildarfjoldi_skilaboda"];
     return await fetchAllEndpoints(endpoints, year);
   },
 
@@ -70,8 +70,8 @@ export const GET = {
   },
 
   //     async test() {
-  //         "heildarfjöldi_mynda"
-  // "heildarfjöldi_skilaboða"
+  //         "heildarfjoldi_mynda"
+  // "heildarfjoldi_skilaboða"
   //         const url = `${API_URL}/data`
   //         const data = await fetchUrl(url)
   //         return data

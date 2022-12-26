@@ -1,38 +1,17 @@
 <template>
   <div>
     <div class="app-container">
-      <video
-        class="video-bg"
-        autoplay
-        loop
-        muted
-        src="PoggersBG.mp4"
-        type="video/mp4"
-      ></video>
+      <video class="video-bg" autoplay loop muted src="PoggersBG.mp4" type="video/mp4"></video>
       <div class="main-container" v-if="fetching">
         <Loading />
       </div>
       <div v-else class="main-container">
         <b-container class="page-container">
-          <component
-            v-if="buttonPage"
-            :is="buttonPage"
-            v-on:toggling="togglePagination"
-          />
-          <component
-            v-else
-            :is="pages[currPage]"
-            v-on:navigate="handleNavigation"
-          />
+          <component v-if="buttonPage" :is="buttonPage" v-on:toggling="togglePagination" />
+          <component v-else :is="pages[currPage]" v-on:navigate="handleNavigation" />
           <div class="app-options">
-            <Pagination
-              v-if="!paginationHidden"
-              :pages="pages.length"
-              :btn-page="buttonPage !== null"
-              v-on:clear="clearButtonPage"
-              v-on:navigate="updatePage"
-              v-on:update="updateYear"
-            />
+            <Pagination v-if="!paginationHidden" :pages="pages.length" :btn-page="buttonPage !== null"
+              v-on:clear="clearButtonPage" v-on:navigate="updatePage" v-on:update="updateYear" />
           </div>
         </b-container>
       </div>
@@ -49,7 +28,6 @@ import DataOverTime from "./templates/DataOverTime.vue";
 import MostPopularData from "./templates/MostPopularData.vue";
 import ReactionData from "./templates/ReactionData.vue";
 import Timeline from "./templates/Timeline.vue";
-import Video from "./templates/Video.vue";
 import PageSelection from "./templates/PageSelection.vue";
 export default {
   name: "App",
@@ -61,7 +39,7 @@ export default {
   data() {
     return {
       fetching: false,
-      pages: [Video, Timeline, PageSelection],
+      pages: [Timeline, PageSelection],
       buttonPages: {
         ReactionData: ReactionData,
         MostPopularData: MostPopularData,
@@ -139,26 +117,32 @@ export default {
   font-family: "Fredoka one";
   src: url("./assets/fonts/Fredoka_One/FredokaOne-Regular.ttf");
 }
+
 body {
   font-family: "Roboto black";
   overflow: hidden;
   background-color: lightslategray;
 }
+
 @import "~@/assets/scss/vendors/bootstrap-vue/index";
+
 .lorge {
   font-size: 80px;
+
   @include media-breakpoint-down(sm) {
     & {
       font-size: 60px;
     }
   }
 }
+
 .app-container {
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 2;
   height: 100vh;
+
   @include media-breakpoint-down(sm) {
     & {
       padding-top: 70px;
@@ -188,12 +172,14 @@ body {
   position: fixed;
   margin-bottom: 100px;
   width: 85%;
+
   @include media-breakpoint-down(sm) {
     & {
       margin-bottom: 10px;
       width: 100%;
     }
   }
+
   bottom: 0;
 }
 
@@ -210,14 +196,19 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   @include media-breakpoint-down(sm) {
     & {
       width: 100%;
       padding: 5px;
     }
   }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+
+  /* Firefox */
   &::-webkit-scrollbar {
     display: none;
   }

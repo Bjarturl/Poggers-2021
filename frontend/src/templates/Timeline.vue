@@ -3,16 +3,14 @@
     <h1 class="text-center lorge">POGGERS 2022</h1>
     <div class="pyro h-100" v-if="!fetching">
       <div class="before"></div>
-      <div
-        class="
+      <div class="
           d-flex
           flex-column
           justify-content-around
           h-100
           align-items-center
           text-center
-        "
-      >
+        ">
         <h1>
           <span class="text-primary">{{ msgs }}</span> skilaboð send
           {{ yearText }}
@@ -44,9 +42,9 @@ export default {
     this.fetching = true;
     await GET.allTimeData(this.$store.year).then(
       function (data) {
-        this.imgs = data[0]["heildarfjöldi_mynda"][0]["Heildarfjöldi mynda"];
+        this.imgs = data[0]["heildarfjoldi_mynda"][0]["Heildarfjöldi mynda"];
         this.msgs =
-          data[1]["heildarfjöldi_skilaboða"][0]["Heildarfjöldi skilaboða"];
+          data[1]["heildarfjoldi_skilaboda"][0]["Heildarfjöldi skilaboða"];
       }.bind(this)
     );
     setTimeout(() => {
@@ -64,7 +62,7 @@ export default {
 
   computed: {
     yearText() {
-      if (this.$store.year === "Frá byrjun") {
+      if (this.$store.year === "frabyrjun") {
         return "frá upphafi";
       }
       return "á árinu " + this.$store.year;
@@ -78,24 +76,24 @@ export default {
 .page-container {
   min-height: 90%;
 }
+
 $particles: 50;
 $width: 500;
 $height: 500;
 
 // Create the explosion...
-$box-shadow: ();
-$box-shadow2: ();
+$box-shadow: (
+);
+$box-shadow2: (
+);
+
 @for $i from 0 through $particles {
   $box-shadow: $box-shadow,
-    random($width)-$width /
-      2 +
-      px
-      random($height)-$height /
-      1.2 +
-      px
-      hsl(random(360), 100, 50);
-  $box-shadow2: $box-shadow2, 0 0 #fff;
+  random($width)-$width / 2+px random($height)-$height / 1.2+px hsl(random(360), 100, 50);
+  $box-shadow2: $box-shadow2,
+  0 0 #fff;
 }
+
 @mixin keyframes($animationName) {
   @-webkit-keyframes #{$animationName} {
     @content;
@@ -150,24 +148,20 @@ $box-shadow2: ();
   -ms-transform: $settings;
 }
 
-.pyro > .before,
-.pyro > .after {
+.pyro>.before,
+.pyro>.after {
   position: absolute;
 
   width: 5px;
   height: 5px;
   border-radius: 50%;
   box-shadow: $box-shadow2;
-  @include animation(
-    (
-      1s bang ease-out infinite backwards,
+  @include animation((1s bang ease-out infinite backwards,
       1s gravity ease-in infinite backwards,
-      5s position linear infinite backwards
-    )
-  );
+      5s position linear infinite backwards));
 }
 
-.pyro > .after {
+.pyro>.after {
   @include animation-delay((1.25s, 1.25s, 1.25s));
   @include animation-duration((1.25s, 1.25s, 6.25s));
 }
@@ -186,26 +180,31 @@ $box-shadow2: ();
 }
 
 @include keyframes(position) {
+
   0%,
   19.9% {
     margin-top: 10%;
     margin-left: 40%;
   }
+
   20%,
   39.9% {
     margin-top: 40%;
     margin-left: 30%;
   }
+
   40%,
   59.9% {
     margin-top: 20%;
     margin-left: 70%;
   }
+
   60%,
   79.9% {
     margin-top: 30%;
     margin-left: 20%;
   }
+
   80%,
   99.9% {
     margin-top: 30%;
