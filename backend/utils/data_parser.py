@@ -169,12 +169,11 @@ class DataParser:
             WHERE timestamp >= '{self.min_date}'
             AND timestamp <= '{self.max_date}'
             GROUP BY TO_CHAR(timestamp, 'month')
-            ORDER BY TO_CHAR(timestamp, 'month')
         """)
         with open(f"{self.save_path}/fjoldi_skilaboda_eftir_manudum.csv", "w+", encoding="utf-8") as f:
             f.write("Skilaboð,Mánuður\n")
             for line in self.cursor.fetchall():
-                f.write(f"{line[0]},{line[1]}\n")
+                f.write(f"{line[0]},{line[1].capitalize()}\n")
         f.close()
 
     def fjöldi_skilaboða_eftir_tíma_dags(self):

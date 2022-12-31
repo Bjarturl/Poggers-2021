@@ -1,16 +1,13 @@
 <template>
   <mdb-container>
-    <mdb-pie-chart
-      :data="pieChartData"
-      :options="pieChartOptions"
-      :width="width"
-      :height="height"
-    ></mdb-pie-chart>
+    <mdb-pie-chart :data="pieChartData" :options="pieChartOptions" :width="width" :height="height"></mdb-pie-chart>
   </mdb-container>
 </template>
 
 <script>
 import { mdbPieChart, mdbContainer } from "mdbvue";
+import { getTrueLabel } from "../utils/helpers";
+
 export default {
   name: "PieChart",
   components: {
@@ -29,7 +26,7 @@ export default {
     },
     options: {
       type: Object,
-      default: () => {},
+      default: () => { },
       required: false,
     },
     width: {
@@ -66,6 +63,7 @@ export default {
             "#616774",
           ],
           ...dataset,
+          label: getTrueLabel(dataset.label)
         })),
       };
     },
@@ -98,4 +96,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 </style>

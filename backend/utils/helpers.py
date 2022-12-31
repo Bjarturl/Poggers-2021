@@ -27,6 +27,7 @@ def get_stop_words():
 
 
 def get_min_year(chat_id):
+    return 2022
     db = connect_to_database()
     c = db.cursor()
     c.execute(f"""

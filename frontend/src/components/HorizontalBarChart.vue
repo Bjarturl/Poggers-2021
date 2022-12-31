@@ -1,14 +1,13 @@
 <template>
   <mdb-container>
-    <mdb-horizontal-bar-chart
-      :data="horizontalBarChartData"
-      :options="horizontalBarChartOptions"
-    ></mdb-horizontal-bar-chart>
+    <mdb-horizontal-bar-chart :data="horizontalBarChartData"
+      :options="horizontalBarChartOptions"></mdb-horizontal-bar-chart>
   </mdb-container>
 </template>
 
 <script>
 import { mdbHorizontalBarChart, mdbContainer } from "mdbvue";
+import { getTrueLabel } from "../utils/helpers";
 export default {
   name: "HorizontalBarChart",
   components: {
@@ -27,7 +26,7 @@ export default {
     },
     options: {
       type: Object,
-      default: () => {},
+      default: () => { },
       required: false,
     },
     width: {
@@ -72,6 +71,7 @@ export default {
             "#0000ff",
           ],
           ...dataset,
+          label: getTrueLabel(dataset.label)
         })),
       };
     },
@@ -116,4 +116,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 </style>

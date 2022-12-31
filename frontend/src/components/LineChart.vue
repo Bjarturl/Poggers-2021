@@ -1,15 +1,12 @@
 <template>
   <mdb-container ref="line">
-    <mdb-line-chart
-      :data="lineChartData"
-      :options="lineChartOptions"
-      :width="width"
-    ></mdb-line-chart>
+    <mdb-line-chart :data="lineChartData" :options="lineChartOptions" :width="width"></mdb-line-chart>
   </mdb-container>
 </template>
 
 <script>
 import { mdbLineChart, mdbContainer } from "mdbvue";
+import { getTrueLabel } from "../utils/helpers";
 
 export default {
   name: "LineChart",
@@ -29,7 +26,7 @@ export default {
     },
     options: {
       type: Object,
-      default: () => {},
+      default: () => { },
       required: false,
     },
 
@@ -53,6 +50,7 @@ export default {
           backgroundColor: "transparent",
           borderColor: "rgba(255, 99, 132, 1)",
           ...dataset,
+          label: getTrueLabel(dataset.label)
         })),
       };
     },
@@ -101,4 +99,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 </style>
