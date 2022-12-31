@@ -1,17 +1,17 @@
 Name,ATK,ACC,HP,CRIT,DEF
-Kristófer Haukur Hauksson,42,0.0,522,0.0,0.0
-Jón Egill Hafsteinsson,109,0.0,565,0.0,0.0
-Ægir Björn,42,0.0,216,0.0,0.0
-Finnbogi Guðmundsson,0,0.0,1,0.0,0
-Ásgrímur Ari,0,0.0,2,0.0,0
-Arnaldur Gylfi Þórðarson,71,0.0,56,0.0,0.0
-Helgi Snær Gestsson,75,0.0,507,0.0,0.0
-Arnfinnur Kolbeinsson,56,0.0,147,0.0,0.0
-Bjartur Lúkas Grétarsson,9,0.0,70,0.0,0.0
-Jóhannes Birkir Gunnarsson,18,0.0,110,0.0,0.0
-Sindri Snær Jónsson,9,0.0,61,0.0,0.0
-Einar Valberg Eiríksson,71,0.0,79,0.0,0.0
-Hjálmar Stefánsson,19,0.0,82,0.0,0.0
-Ingvar Örn Kristinsson Valberg,52,0.0,366,0.0,0.0
-Manfreð Már Vilhjálmsson,31,0.0,356,0.0,0.0
-Eyvindur Einar Guðnason,48,0.0,107,0.0,0.0
+Kristófer Haukur Hauksson,42,0.9804,522,0.07655,0.33
+Jón Egill Hafsteinsson,109,0.9728,565,0.30275,0.28
+Ægir Björn,42,0.7952,216,0.13635,0.31
+Finnbogi Guðmundsson,0,0.998,1,0.0015,0
+Ásgrímur Ari,0,0.9992,2,0.00015,0
+Arnaldur Gylfi Þórðarson,71,0.9728,56,0.23345,0.3
+Helgi Snær Gestsson,75,0.9776,507,0.1594,0.32
+Arnfinnur Kolbeinsson,56,0.9672,147,0.1141,0.32
+Bjartur Lúkas Grétarsson,9,0.9744,70,0.04155,0.33
+Jóhannes Birkir Gunnarsson,18,0.984,110,0.0424,0.33
+Sindri Snær Jónsson,9,0.9712,61,0.0326,0.33
+Einar Valberg Eiríksson,71,0.986,79,0.12255,0.32
+Hjálmar Stefánsson,19,0.9876,82,0.0367,0.33
+Ingvar Örn Kristinsson Valberg,52,0.9744,366,0.1458,0.32
+Manfreð Már Vilhjálmsson,31,0.9896,356,0.0699,0.33
+Eyvindur Einar Guðnason,48,0.9788,107,0.1111,0.32

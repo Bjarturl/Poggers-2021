@@ -293,7 +293,7 @@ ORDER BY  avg(cast(msg_len as float)) DESC
 
     def get_stats(self):
         self.cursor.execute(f"""
-            SELECT S.name, round(count(*) / 100, 0) as "ATK", (2500 - MAX(msg_len)) / 2500 as "ACC"
+            SELECT S.name, round(count(*) / 100, 0) as "ATK", (2500 - MAX(msg_len)) / 2500.0 as "ACC"
             from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}'
             AND timestamp <= '{self.max_date}'
@@ -323,7 +323,7 @@ ORDER BY  avg(cast(msg_len as float)) DESC
                 names[name] = {}
             names[name]['HP'] = line[1]
         self.cursor.execute(f"""
-            SELECT S.name, (COUNT(*) / 20000) as "CRIT"
+            SELECT S.name, (COUNT(*) / 20000.0) as "CRIT"
             from messenger_reaction R JOIN messenger_message M ON R.message_id = M.id
             join messenger_sender S ON M.sender_id = S.id
             where R.timestamp >= '{self.min_date}'
@@ -337,7 +337,7 @@ ORDER BY  avg(cast(msg_len as float)) DESC
                 names[name] = {}
             names[name]['CRIT'] = float(line[1])
         self.cursor.execute(f"""
-            SELECT S.name, round((8500 - COUNT(*)) / 8500 / 3, 2) as "DEF"
+            SELECT S.name, round((8500 - COUNT(*)) / 8500.0 / 3, 2) as "DEF"
             from messenger_message M JOIN messenger_sender S on S.id = M.sender_id
             WHERE timestamp >= '{self.min_date}'
             AND timestamp <= '{self.max_date}'
@@ -363,32 +363,32 @@ ORDER BY  avg(cast(msg_len as float)) DESC
         f.close()
 
     def create_all(self):
-        print("Executing heildarfjöldi_skilaboða()...")
-        self.heildarfjöldi_skilaboða()
-        print("Executing heildarfjöldi_mynda()...")
-        self.heildarfjöldi_mynda()
-        print("Executing fjöldi_skilaboða_eftir_degi()...")
-        self.fjöldi_skilaboða_eftir_degi()
-        print("Executing fjöldi_skilaboða_eftir_mánuðum()...")
-        self.fjöldi_skilaboða_eftir_mánuðum()
-        print("Executing fjöldi_skilaboða_eftir_tíma_dags()...")
-        self.fjöldi_skilaboða_eftir_tíma_dags()
-        print("Executing reactions_per_einstaklingur()...")
-        self.reactions_per_einstaklingur()
-        print("Executing fékk_flest_reactions()...")
-        self.fékk_flest_reactions()
-        print("Executing flest_skilaboð_send()...")
-        self.flest_skilaboð_send()
-        print("Executing flestar_myndir_sendar()...")
-        self.flestar_myndir_sendar()
-        print("Executing lengstu_skilaboðin()...")
-        self.lengstu_skilaboðin()
-        print("Executing meðallengd_skilaboða()...")
-        self.meðallengd_skilaboða()
-        print("Executing nafnið()...")
-        self.nafnið()
-        print("Executing reactaði_oftast()...")
-        self.reactaði_oftast()
+        # print("Executing heildarfjöldi_skilaboða()...")
+        # self.heildarfjöldi_skilaboða()
+        # print("Executing heildarfjöldi_mynda()...")
+        # self.heildarfjöldi_mynda()
+        # print("Executing fjöldi_skilaboða_eftir_degi()...")
+        # self.fjöldi_skilaboða_eftir_degi()
+        # print("Executing fjöldi_skilaboða_eftir_mánuðum()...")
+        # self.fjöldi_skilaboða_eftir_mánuðum()
+        # print("Executing fjöldi_skilaboða_eftir_tíma_dags()...")
+        # self.fjöldi_skilaboða_eftir_tíma_dags()
+        # print("Executing reactions_per_einstaklingur()...")
+        # self.reactions_per_einstaklingur()
+        # print("Executing fékk_flest_reactions()...")
+        # self.fékk_flest_reactions()
+        # print("Executing flest_skilaboð_send()...")
+        # self.flest_skilaboð_send()
+        # print("Executing flestar_myndir_sendar()...")
+        # self.flestar_myndir_sendar()
+        # print("Executing lengstu_skilaboðin()...")
+        # self.lengstu_skilaboðin()
+        # print("Executing meðallengd_skilaboða()...")
+        # self.meðallengd_skilaboða()
+        # print("Executing nafnið()...")
+        # self.nafnið()
+        # print("Executing reactaði_oftast()...")
+        # self.reactaði_oftast()
         print("Executing get_stats()...")
         self.get_stats()
 

@@ -28,7 +28,7 @@ def root():
 def data():
     print(os.listdir(f"{os.getcwd()}/data/2022"))
     return {
-        "years": os.listdir(f"{os.getcwd()}/data"),
+        "years": [year if year != "frabyrjun" else "Frá byrjun" for year in os.listdir(f"{os.getcwd()}/data")],
         "names": [name.split('.')[0] for name in os.listdir(f"{os.getcwd()}/data/2022")]
     }
 
@@ -36,10 +36,13 @@ def data():
 # Returns parsed data for specified year and file
 @app.get("/data/{year}/{file}")
 async def data_by_year_and_file(year, file):
+    yr = year
+    if yr == 'Frá byrjun':
+        yr = 'frabyrjun'
     apiData = {}
     data = []
     try:
-        f = open(f"data/{year}/{file}.csv", "r", encoding="utf-8")
+        f = open(f"data/{yr}/{file}.csv", "r", encoding="utf-8")
     except FileNotFoundError:
         return {"data": [], "message": "File not found"}
     csv_reader = csv.reader(f, delimiter=",")
